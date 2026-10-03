@@ -71,10 +71,18 @@ public class BriefLiveNotificationPlugin extends Plugin {
         String title = call.getString("title", "Brief");
         String text = call.getString("text", "");
         int progress = Math.max(0, Math.min(100, call.getInt("progress", 0)));
+        Integer accent = null;
+        try { accent = BriefTimeOfDayTheme.resolve(call.getString("period")); } catch (Exception ignored) { accent = null; }
         try {
             Context ctx = getContext();
             ensureChannel(ctx);
-            Notification n = Build.VERSION.SDK_INT >= 36 ? buildLiveUpdate(ctx, title, text, progress) : buildCompat(ctx, title, text, progress);
+            Notification n;
+            try {
+                n = build(ctx, title, text, progress, accent);
+            } catch (Exception themeError) {
+                // Theme must never block the notification: rebuild with the exact original appearance.
+                n = build(ctx, title, text, progress, null);
+            }
             NotificationManagerCompat.from(ctx).notify(NOTIFICATION_ID, n);
             status(call, okStatus);
         } catch (SecurityException e) {
@@ -82,6 +90,10 @@ public class BriefLiveNotificationPlugin extends Plugin {
         } catch (Exception e) {
             call.reject("error", "ERROR");
         }
+    }
+
+    private Notification build(Context ctx, String title, String text, int progress, Integer accent) {
+        return Build.VERSION.SDK_INT >= 36 ? buildLiveUpdate(ctx, title, text, progress, accent) : buildCompat(ctx, title, text, progress, accent);
     }
 
     private void ensureChannel(Context ctx) {
@@ -101,7 +113,7 @@ public class BriefLiveNotificationPlugin extends Plugin {
     }
 
     /** Android 16 (API 36): official Live Update — ProgressStyle + promoted ongoing request. */
-    private Notification buildLiveUpdate(Context ctx, String title, String text, int progress) {
+    private Notification buildLiveUpdate(Context ctx, String title, String text, int progress, Integer accent) {
         Notification.ProgressStyle style = new Notification.ProgressStyle()
             .setProgress(progress)
             .setStyledByProgress(true);
@@ -122,14 +134,15 @@ public class BriefLiveNotificationPlugin extends Plugin {
         Bundle promoted = new Bundle();
         promoted.putBoolean("android.requestPromotedOngoing", true);
         b.addExtras(promoted);
+        if (accent != null) b.setColor(accent); // official accent/small-icon tint; sparkle shape unchanged
         return b.build();
     }
 
     /** Older Android: plain ongoing notification (still carries the Samsung hints on One UI). */
-    private Notification buildCompat(Context ctx, String title, String text, int progress) {
+    private Notification buildCompat(Context ctx, String title, String text, int progress, Integer accent) {
         Bundle extras = new Bundle();
         SamsungLiveNotificationExtras.apply(extras, title, text);
-        return new NotificationCompat.Builder(ctx, CHANNEL_ID)
+        NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, CHANNEL_ID)
             .setSmallIcon(ctx.getApplicationInfo().icon)
             .setContentTitle(title)
             .setContentText(text)
@@ -137,8 +150,9 @@ public class BriefLiveNotificationPlugin extends Plugin {
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setProgress(100, progress, false)
-            .addExtras(extras)
-            .build();
+            .addExtras(extras);
+        if (accent != null) b.setColor(accent);
+        return b.build();
     }
 
     private void status(PluginCall call, String s) {
