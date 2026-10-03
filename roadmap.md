@@ -8,4 +8,4 @@
 - [x] Add importance scoring, truthful empty-data handling, language-aware period caching, and realistic Bulgarian source data.
 - [x] Connect the Dynamic Briefing Pill and discreet development-only morning/evening switching without redesigning the app.
 - [x] Cover Bulgarian, English, empty and missing data, multiple events/news, importance, and cache behavior with tests.
-- [ ] Verify TypeScript/build health, console health, mobile layout, pill switching, and briefing-language independence.
+- [x] Verify TypeScript/build health, console health, mobile layout, pill switching, and briefing-language independence.
