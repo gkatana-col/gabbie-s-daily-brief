@@ -6,6 +6,7 @@ export interface BriefWidgetDataProvider {
 }
 
 const plural = (count: number, singular: string, pluralForm: string) => count === 1 ? singular : pluralForm;
+const sourceTime = (value: string) => value.match(/T(\d{2}:\d{2})/)?.[1] ?? "";
 
 export function resolveBriefWidgetMode(date: Date): BriefWidgetMode {
   const hour = date.getHours();
@@ -17,11 +18,7 @@ export function resolveBriefWidgetMode(date: Date): BriefWidgetMode {
 export const briefingWidgetDataProvider: BriefWidgetDataProvider = {
   getData(mode, briefing, language) {
     const isBg = language === "bg";
-    const timestamp = new Intl.DateTimeFormat(isBg ? "bg-BG" : "en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).format(new Date(briefing.generatedAt));
+    const timestamp = sourceTime(briefing.generatedAt);
 
     if (mode === "inactive") {
       return {
@@ -56,9 +53,7 @@ export const briefingWidgetDataProvider: BriefWidgetDataProvider = {
     }
 
     const university = briefing.calendar.find((item) => /универс|university/i.test(item.title)) ?? briefing.calendar[0];
-    const eventTime = university
-      ? new Intl.DateTimeFormat(isBg ? "bg-BG" : "en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(university.start))
-      : null;
+    const eventTime = university ? sourceTime(university.start) : null;
     const importantCount = briefing.calendar.length;
     return {
       mode,
