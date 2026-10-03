@@ -1,6 +1,7 @@
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { setNativeBridge, webNativeBridge, webPlatformInfo, nativeBridge } from "./nativeBridge";
 import { createCapacitorCalendarProvider, setNativeCalendarProvider } from "./calendarProvider";
+import { createLiveNotificationMethods, LIVE_NOTIFICATION_TEST } from "./liveNotification";
 import type { NativeBridge, Platform, PlatformInfo } from "./types";
 
 /** Mirrors android/app/src/main/java/com/brief/app/BriefPlatformPlugin.java. */
@@ -14,6 +15,7 @@ export function createCapacitorBridge(): NativeBridge {
   const platform = Capacitor.getPlatform() as Platform;
   return {
     ...webNativeBridge,
+    ...(platform === "android" && Capacitor.isPluginAvailable("BriefLiveNotification") ? createLiveNotificationMethods() : {}),
     isNativeApp: () => true,
     getPlatform: () => platform,
     async getPlatformInfo(): Promise<PlatformInfo> {
@@ -44,6 +46,14 @@ export function installNativeBridge() {
   }
   // Development/debug diagnostic: run `await briefNativeDiagnostics()` in the console (or chrome://inspect for the APK).
   if (import.meta.env.DEV || Capacitor.isNativePlatform()) {
-    (window as unknown as { briefNativeDiagnostics: () => Promise<PlatformInfo> }).briefNativeDiagnostics = () => nativeBridge.getPlatformInfo();
+    const w = window as unknown as Record<string, unknown>;
+    w.briefNativeDiagnostics = () => nativeBridge.getPlatformInfo();
+    // Dev/test hook for the Live Notification POC: briefLiveNotificationTest.requestPermission() → .start() → .update() → .stop()
+    w.briefLiveNotificationTest = {
+      requestPermission: () => nativeBridge.requestNotificationPermission(),
+      start: () => nativeBridge.startLiveNotification(LIVE_NOTIFICATION_TEST.initial),
+      update: () => nativeBridge.updateLiveNotification(LIVE_NOTIFICATION_TEST.updated),
+      stop: () => nativeBridge.stopLiveNotification(),
+    };
   }
 }

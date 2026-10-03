@@ -8,6 +8,7 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(BriefPlatformPlugin.class);
         registerPlugin(BriefCalendarPlugin.class);
+        registerPlugin(BriefLiveNotificationPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

@@ -25,6 +25,10 @@ export interface PlatformInfo {
   appVersion: string | null;
 }
 
+export interface LiveNotificationContent { title: string; text: string; progress?: number /* 0–100 */ }
+export type LiveNotificationStatus = "shown" | "updated" | "stopped" | "unsupported" | "permission_denied" | "error";
+export type NotificationPermissionState = "granted" | "denied" | "prompt" | "unsupported";
+
 export type UnsupportedResult = { supported: false; reason: "web_platform" };
 
 export interface NativeBridge {
@@ -38,6 +42,11 @@ export interface NativeBridge {
   sendNowBarUpdate(data: NowBarContent): Promise<void>;
   clearNowBar(): Promise<void>;
   openNativeScreen(screen: string, params?: Record<string, unknown>): Promise<void>;
+  /** Proof-of-concept Live Notification (Android 16 promoted ongoing). Permission is only requested when called explicitly. */
+  requestNotificationPermission(): Promise<NotificationPermissionState>;
+  startLiveNotification(content: LiveNotificationContent): Promise<LiveNotificationStatus>;
+  updateLiveNotification(content: LiveNotificationContent): Promise<LiveNotificationStatus>;
+  stopLiveNotification(): Promise<LiveNotificationStatus>;
 }
 
 export interface NowBarAdapter {
