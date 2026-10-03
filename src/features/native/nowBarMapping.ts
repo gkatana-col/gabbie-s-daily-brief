@@ -19,7 +19,7 @@ export function briefingToNowBarContent(briefing: Briefing, period: BriefingPeri
     return { id: `evening:${briefing.generatedAt.slice(0, 10)}`, type: "evening", title: c.eveningTitle, subtitle: c.eveningSub, icon: "evening", timestamp: briefing.generatedAt, priority: "normal", action, expandable: true };
   }
   if (period === "morning") {
-    const count = briefing.priorities.filter((p) => !p.completed).length;
+    const count = briefing.calendar.length; // same count the home widget shows
     return { id: `morning:${briefing.generatedAt.slice(0, 10)}`, type: "morning", title: c.morningTitle, subtitle: count ? `${c.morningSub} · ${c.important(count)}` : c.morningSub, icon: "morning", timestamp: briefing.generatedAt, priority: "normal", action, expandable: true };
   }
   return { id: "general", type: "general", title: c.general, icon: "brand", priority: "low", action: { type: "open_brief" } };
