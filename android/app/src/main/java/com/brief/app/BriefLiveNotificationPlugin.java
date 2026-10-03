@@ -116,8 +116,12 @@ public class BriefLiveNotificationPlugin extends Plugin {
             .setOnlyAlertOnce(true)
             .setStyle(style)
             .setShortCriticalText("Brief")
-            .setRequestPromotedOngoing(true)
             .addExtras(extras);
+        // Same effect as Notification.Builder#setRequestPromotedOngoing(true): that setter is not in the
+        // compile SDK (android-36 r02), so the documented Notification.EXTRA_REQUEST_PROMOTED_ONGOING key is set directly.
+        Bundle promoted = new Bundle();
+        promoted.putBoolean("android.requestPromotedOngoing", true);
+        b.addExtras(promoted);
         return b.build();
     }
 
