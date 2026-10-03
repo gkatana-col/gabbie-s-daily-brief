@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppProvider } from "../features/i18n/I18nProvider";
 import { DiscoverPreferencesProvider } from "../features/discover/DiscoverPreferences";
+import { NowBarSync } from "../features/native/NowBarSync";
 import { AppShell } from "../components/layout/AppShell";
 
 function NotFoundComponent() {
@@ -124,7 +125,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
-        <DiscoverPreferencesProvider><AppShell>
+        <DiscoverPreferencesProvider><NowBarSync /><AppShell>
           <Outlet />
         </AppShell></DiscoverPreferencesProvider>
       </AppProvider>
