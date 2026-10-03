@@ -1,5 +1,16 @@
 import {
+  ArrowLeft,
   BadgeDollarSign,
+  Bookmark,
+  BookmarkCheck,
+  EyeOff,
+  Info,
+  MoreHorizontal,
+  RefreshCw,
+  Share2,
+  ThumbsDown,
+  WifiOff,
+  Compass,
   Bell,
   BriefcaseBusiness,
   CalendarDays,
@@ -45,7 +56,18 @@ export type BriefIconName =
   | "university"
   | "weather"
   | "work"
-  | "brand";
+  | "brand"
+  | "back"
+  | "bookmark"
+  | "bookmarked"
+  | "hide"
+  | "info"
+  | "more"
+  | "refresh"
+  | "share"
+  | "notInterested"
+  | "offline"
+  | "discover";
 
 const icons: Record<BriefIconName, LucideIcon> = {
   aiInsight: Sparkles,
@@ -69,6 +91,17 @@ const icons: Record<BriefIconName, LucideIcon> = {
   weather: CloudSun,
   work: BriefcaseBusiness,
   brand: Leaf,
+  back: ArrowLeft,
+  bookmark: Bookmark,
+  bookmarked: BookmarkCheck,
+  hide: EyeOff,
+  info: Info,
+  more: MoreHorizontal,
+  refresh: RefreshCw,
+  share: Share2,
+  notInterested: ThumbsDown,
+  offline: WifiOff,
+  discover: Compass,
 };
 
 export function BriefIcon({ name, size = 16, strokeWidth = 1.75, ...props }: { name: BriefIconName } & LucideProps) {

@@ -11,3 +11,5 @@
 - [x] Verify TypeScript/build health, console health, mobile layout, pill switching, and briefing-language independence.
 - [x] Add the reusable Brief Home Widget, browser-neutral data provider, and development preview.
 - [x] Verify morning, evening, inactive, Bulgarian, English, all widget sizes, themes, and narrow-screen overflow.
+
+- [x] Discover Feed (Новини → Открий) with provider, engine, ranking, article view, states, dev preview

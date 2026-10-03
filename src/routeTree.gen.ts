@@ -11,10 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalendarRouteImport } from './routes/calendar'
-import { Route as NewsRouteImport } from './routes/news'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as WidgetPreviewRouteImport } from './routes/widget-preview'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
+import { Route as NewsStoryIdRouteImport } from './routes/news.$storyId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,11 +25,6 @@ const IndexRoute = IndexRouteImport.update({
 const CalendarRoute = CalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/news',
-  path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -46,55 +42,83 @@ const WidgetPreviewRoute = WidgetPreviewRouteImport.update({
   path: '/widget-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsStoryIdRoute = NewsStoryIdRouteImport.update({
+  id: '/news/$storyId',
+  path: '/news/$storyId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
-  '/news': typeof NewsRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/news/$storyId': typeof NewsStoryIdRoute
+  '/news/': typeof NewsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
-  '/news': typeof NewsRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/news/$storyId': typeof NewsStoryIdRoute
+  '/news': typeof NewsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
-  '/news': typeof NewsRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/news/$storyId': typeof NewsStoryIdRoute
+  '/news/': typeof NewsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/calendar' | '/news' | '/settings' | '/today' | '/widget-preview'
+    | '/'
+    | '/calendar'
+    | '/settings'
+    | '/today'
+    | '/widget-preview'
+    | '/news/$storyId'
+    | '/news/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calendar' | '/news' | '/settings' | '/today' | '/widget-preview'
+  to:
+    | '/'
+    | '/calendar'
+    | '/settings'
+    | '/today'
+    | '/widget-preview'
+    | '/news/$storyId'
+    | '/news'
   id:
     | '__root__'
     | '/'
     | '/calendar'
-    | '/news'
     | '/settings'
     | '/today'
     | '/widget-preview'
+    | '/news/$storyId'
+    | '/news/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalendarRoute: typeof CalendarRoute
-  NewsRoute: typeof NewsRoute
   SettingsRoute: typeof SettingsRoute
   TodayRoute: typeof TodayRoute
   WidgetPreviewRoute: typeof WidgetPreviewRoute
+  NewsStoryIdRoute: typeof NewsStoryIdRoute
+  NewsIndexRoute: typeof NewsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -111,13 +135,6 @@ declare module '@tanstack/react-router' {
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof CalendarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -141,16 +158,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WidgetPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/$storyId': {
+      id: '/news/$storyId'
+      path: '/news/$storyId'
+      fullPath: '/news/$storyId'
+      preLoaderRoute: typeof NewsStoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalendarRoute: CalendarRoute,
-  NewsRoute: NewsRoute,
   SettingsRoute: SettingsRoute,
   TodayRoute: TodayRoute,
   WidgetPreviewRoute: WidgetPreviewRoute,
+  NewsStoryIdRoute: NewsStoryIdRoute,
+  NewsIndexRoute: NewsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

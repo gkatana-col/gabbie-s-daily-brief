@@ -14,3 +14,4 @@
 - Keep the Briefing Engine deterministic and provider-agnostic behind a stable structured input/output contract so mock adapters can later be replaced without UI changes.
 - Render interface iconography through the shared Brief icon component so navigation, cards, and settings retain one consistent line-icon language.
 - Keep home-widget presentation prop-driven and browser-neutral behind BriefWidgetDataProvider so a future native client can reuse the same conceptual contract.
+- Discover is a separate module (src/features/discover): sources come only through a DiscoverFeedProvider, ranking/summaries live in discoverEngine, and briefingEngine receives at most a few ranked stories as plain news input — so real RSS/API providers can replace the mock without UI changes.
