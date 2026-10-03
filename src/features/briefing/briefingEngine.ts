@@ -33,6 +33,15 @@ const formatTime = (value: string, language: ResolvedLanguage, timeZone: string)
 
 const plural = (count: number, singular: string, pluralForm: string) => count === 1 ? singular : pluralForm;
 
+// Time-of-day greeting from the device's LOCAL hour:
+// 05:00–10:59 morning, 11:00–16:59 midday, 17:00–21:59 evening, 22:00–04:59 night.
+export function getTimeOfDayGreeting(hour: number, language: ResolvedLanguage): string {
+  const isBg = language === "bg";
+  if (hour >= 5 && hour <= 10) return isBg ? "Добро утро" : "Good morning";
+  if (hour >= 11 && hour <= 16) return isBg ? "Добър ден" : "Good afternoon";
+  return isBg ? "Добър вечер" : "Good evening"; // evening and night
+}
+
 export function calculateImportance(item: ImportanceItem, currentDateTime = new Date().toISOString()): ImportanceLevel {
   let score = item.importance ? explicitImportance[item.importance] : 1;
   score += Math.max(0, Math.min(1, item.relevance ?? 0.5)) * 2;
@@ -185,7 +194,7 @@ function buildBriefing(input: BriefingInput): Briefing {
 
   return {
     type: briefingType,
-    greeting: briefingType === "morning" ? (isBg ? "Добро утро" : "Good morning") : (isBg ? "Добър вечер" : "Good evening"),
+    greeting: getTimeOfDayGreeting(new Date().getHours(), language),
     summary,
     priorities,
     calendar: briefingType === "morning" ? todayEvents : tomorrowEvents.map((event) => ({ ...event, title: translate(event.title, language), ...(event.location ? { location: translate(event.location, language) } : {}), importance: calculateImportance(event, currentDateTime) })),

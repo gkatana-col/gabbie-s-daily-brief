@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { calculateImportance, clearBriefingCache, generateBriefing, generateCachedBriefing } from "@/features/briefing/briefingEngine";
+import { calculateImportance, clearBriefingCache, generateBriefing, generateCachedBriefing, getTimeOfDayGreeting } from "@/features/briefing/briefingEngine";
 import { createMockBriefingInput } from "@/features/briefing/mockData";
 import type { BriefingInput, ResolvedLanguage } from "@/features/briefing/types";
 
@@ -16,9 +16,22 @@ const emptyInput = (language: ResolvedLanguage = "bg"): BriefingInput => ({
 describe("briefingEngine", () => {
   beforeEach(clearBriefingCache);
 
+  it("labels the time of day from the device's local hour", () => {
+    expect(getTimeOfDayGreeting(5, "bg")).toBe("Добро утро");
+    expect(getTimeOfDayGreeting(10, "bg")).toBe("Добро утро");
+    expect(getTimeOfDayGreeting(11, "bg")).toBe("Добър ден");
+    expect(getTimeOfDayGreeting(16, "bg")).toBe("Добър ден"); // 16:59 → Midday
+    expect(getTimeOfDayGreeting(17, "bg")).toBe("Добър вечер"); // 17:00 → Evening
+    expect(getTimeOfDayGreeting(21, "bg")).toBe("Добър вечер");
+    expect(getTimeOfDayGreeting(22, "bg")).toBe("Добър вечер"); // night
+    expect(getTimeOfDayGreeting(4, "bg")).toBe("Добър вечер"); // night
+    expect(getTimeOfDayGreeting(11, "en")).toBe("Good afternoon");
+    expect(getTimeOfDayGreeting(17, "en")).toBe("Good evening");
+  });
+
   it("generates a concise Bulgarian Morning Brief from supplied facts", () => {
     const briefing = generateBriefing(createMockBriefingInput("morning", "bg"));
-    expect(briefing).toMatchObject({ type: "morning", greeting: "Добро утро" });
+    expect(briefing).toMatchObject({ type: "morning", greeting: getTimeOfDayGreeting(new Date().getHours(), "bg") });
     expect(briefing.summary).toContain("3 ангажимента");
     expect(briefing.calendar).toHaveLength(3);
     expect(briefing.news).toHaveLength(3);
@@ -27,7 +40,7 @@ describe("briefingEngine", () => {
 
   it("generates an Evening Brief with only evidenced completion and tomorrow data", () => {
     const briefing = generateBriefing(createMockBriefingInput("evening", "bg"));
-    expect(briefing.greeting).toBe("Добър вечер");
+    expect(briefing.greeting).toBe(getTimeOfDayGreeting(new Date().getHours(), "bg"));
     expect(briefing.summary).toBe("Днес приключи 1 от 3 планирани задачи.");
     expect(briefing.completedItems.map((item) => item.id)).toEqual(["t1"]);
     expect(briefing.unfinishedItems.map((item) => item.id)).toEqual(["t2", "t3"]);
@@ -37,7 +50,7 @@ describe("briefingEngine", () => {
 
   it("returns natural English independently of interface copy", () => {
     const briefing = generateBriefing(createMockBriefingInput("morning", "en"));
-    expect(briefing.greeting).toBe("Good morning");
+    expect(briefing.greeting).toBe(getTimeOfDayGreeting(new Date().getHours(), "en"));
     expect(briefing.summary).toBe("Today you have 3 events and 2 tasks.");
     expect(briefing.calendar.some((item) => item.title === "University")).toBe(true);
     expect(briefing.weather.condition).toBe("Mostly sunny");
