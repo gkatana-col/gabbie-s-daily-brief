@@ -1,4 +1,4 @@
-# Gabbie's Daily Brief
+# Daily Brief
 
 Help me build an AI-powered app using Lovable AI. Create a mobile-first AI personal briefing web app called Gabbie Brief.
 
