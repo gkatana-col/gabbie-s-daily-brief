@@ -12,11 +12,19 @@ const localizePriority = (title: string, language: ResolvedLanguage) => {
 
 export function generateBriefing(raw: RawBriefingData, user: User, language: ResolvedLanguage): Briefing {
   const isBg = language === "bg";
-  const calendarItems = raw.calendarItems.map((item) => ({
-    ...item,
-    title: isBg ? item.title : ({ "Екипна среща": "Team sync", "Фокусирана работа": "Focused work", "Вечеря с Мила": "Dinner with Mila" }[item.title] ?? item.title),
-    location: isBg ? item.location : ({ "Библиотека": "Library", "Център": "City centre" }[item.location ?? ""] ?? item.location),
-  }));
+  const calendarItems = raw.calendarItems.map((item) => {
+    const location = isBg ? item.location : ({ "Библиотека": "Library", "Център": "City centre" }[item.location ?? ""] ?? item.location);
+    return {
+      ...item,
+      title: isBg ? item.title : ({ "Екипна среща": "Team sync", "Фокусирана работа": "Focused work", "Вечеря с Мила": "Dinner with Mila" }[item.title] ?? item.title),
+      ...(location ? { location } : {}),
+    };
+  });
+  const englishNews = [
+    ["New European programmes support student innovation", "Technology"],
+    ["The city expands green spaces this autumn", "City"],
+    ["Practical habits for a calmer working week", "Focus"],
+  ] as const;
   return {
     date: raw.date,
     greeting: isBg ? `Добър ден, ${user.name}` : `Good afternoon, ${user.name}`,
@@ -26,15 +34,10 @@ export function generateBriefing(raw: RawBriefingData, user: User, language: Res
     priorities: raw.tasks.map((item) => ({ ...item, title: localizePriority(item.title, language) })),
     calendarItems,
     weather: { ...raw.weather, condition: isBg ? raw.weather.condition : "Mostly sunny", location: isBg ? raw.weather.location : "Sofia" },
-    news: raw.news.map((item, index) => ({
-      ...item,
-      title: isBg ? item.title : [
-        "New European programmes support student innovation",
-        "The city expands green spaces this autumn",
-        "Practical habits for a calmer working week",
-      ][index],
-      category: isBg ? item.category : ["Technology", "City", "Focus"][index],
-    })),
+    news: raw.news.map((item, index) => {
+      const translated = englishNews[index];
+      return { ...item, title: isBg || !translated ? item.title : translated[0], category: isBg || !translated ? item.category : translated[1] };
+    }),
     insight: isBg
       ? `Най-добрият ти прозорец за дълбока работа е ${raw.preferences.focusHours}. Защити го от дребни задачи.`
       : `Your best window for deep work is ${raw.preferences.focusHours}. Protect it from small tasks.`,

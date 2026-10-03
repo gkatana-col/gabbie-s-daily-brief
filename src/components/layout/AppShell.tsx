@@ -4,10 +4,10 @@ import { useApp } from "@/features/i18n/I18nProvider";
 
 const navItems = [
   { to: "/", key: "home", icon: Home, exact: true },
-  { to: "/today", key: "today", icon: SunMedium },
-  { to: "/news", key: "news", icon: Newspaper },
-  { to: "/calendar", key: "calendar", icon: CalendarDays },
-  { to: "/settings", key: "settings", icon: Settings },
+  { to: "/today", key: "today", icon: SunMedium, exact: false },
+  { to: "/news", key: "news", icon: Newspaper, exact: false },
+  { to: "/calendar", key: "calendar", icon: CalendarDays, exact: false },
+  { to: "/settings", key: "settings", icon: Settings, exact: false },
 ] as const;
 
 export function AppShell({ children }: { children: React.ReactNode }) {
