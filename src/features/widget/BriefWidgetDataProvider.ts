@@ -1,3 +1,4 @@
+import { resolveBriefingPeriod } from "@/features/briefing/briefingScheduler";
 import type { Briefing, ResolvedLanguage } from "@/features/briefing/types";
 import type { BriefWidgetData, BriefWidgetMode } from "./types";
 
@@ -9,10 +10,7 @@ const plural = (count: number, singular: string, pluralForm: string) => count ==
 const sourceTime = (value: string) => value.match(/T(\d{2}:\d{2})/)?.[1] ?? "";
 
 export function resolveBriefWidgetMode(date: Date): BriefWidgetMode {
-  const hour = date.getHours();
-  if (hour >= 5 && hour < 17) return "morning";
-  if (hour >= 17 && hour < 23) return "evening";
-  return "inactive";
+  return resolveBriefingPeriod(date);
 }
 
 export const briefingWidgetDataProvider: BriefWidgetDataProvider = {

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useBriefing } from "@/features/briefing/useBriefing";
-import { resolveBriefingPeriod } from "@/features/briefing/briefingScheduler";
 import { useApp } from "@/features/i18n/I18nProvider";
 import { briefingToNowBarContent } from "./nowBarMapping";
 import { nowBarAdapter } from "./providers";
@@ -10,8 +9,8 @@ export function NowBarSync() {
   const { briefingType, briefingLanguage } = useApp();
   const briefing = useBriefing(briefingType);
   useEffect(() => {
-    const now = new Date(briefing.generatedAt);
-    void nowBarAdapter.update(briefingToNowBarContent(briefing, briefingType === "evening" ? "evening" : resolveBriefingPeriod(now) === "evening" ? "morning" : resolveBriefingPeriod(now), briefingLanguage, now));
+    // The app's selected briefing type (set by the scheduler/demo switch) is the source of truth.
+    void nowBarAdapter.update(briefingToNowBarContent(briefing, briefingType, briefingLanguage, new Date(briefing.generatedAt)));
   }, [briefing, briefingType, briefingLanguage]);
   return null;
 }
