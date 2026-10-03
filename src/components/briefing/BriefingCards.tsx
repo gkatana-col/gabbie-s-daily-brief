@@ -1,4 +1,4 @@
-import { ArrowUpRight, Brain, CalendarDays, Check, CloudSun, Leaf, MoonStar, Newspaper, Sparkles } from "lucide-react";
+import { ArrowUpRight, Brain, CalendarDays, Check, CloudSun, Leaf, MoonStar, Newspaper, Sparkles, Sun } from "lucide-react";
 import type { Briefing } from "@/features/briefing/types";
 import { useApp } from "@/features/i18n/I18nProvider";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,9 @@ function CardHeading({ icon: Icon, title, action }: { icon: typeof Brain; title:
 export function GreetingCard({ briefing, onPillClick }: { briefing: Briefing; onPillClick: () => void }) {
   const { t, language } = useApp();
   const date = new Intl.DateTimeFormat(language === "bg" ? "bg-BG" : "en-GB", { weekday: "long", day: "numeric", month: "long" }).format(new Date(briefing.generatedAt));
-  return <section className="relative overflow-hidden px-1 pt-2"><div className="mb-7 flex items-center justify-between gap-3"><div className="brand-mark" aria-hidden="true"><Leaf size={16} /></div><Button variant="ghost" className="dynamic-pill h-auto max-w-[min(78vw,18rem)] whitespace-normal text-right" onClick={onPillClick} aria-label={briefing.type === "morning" ? t("showEvening") : t("showMorning")}><Sparkles size={13} /><span>{briefing.type === "morning" ? t("morningPill") : t("eveningPill")}</span></Button></div><p className="mb-2 text-sm font-medium capitalize text-muted-foreground">{date}</p><h1 className="font-display text-[34px] font-semibold leading-tight text-foreground sm:text-4xl">{briefing.greeting}</h1><p className="mt-3 max-w-xl text-[17px] leading-7 text-muted-foreground">{t("greetingIntro")}</p></section>;
+  const greetingText = briefing.greeting.replace(/[☀️🌙]/gu, "").trim();
+  const PeriodIcon = briefing.type === "morning" ? Sun : MoonStar;
+  return <section className="relative overflow-hidden px-1 pt-2"><div className="mb-7 flex items-center justify-between gap-3"><div className="brand-mark" aria-hidden="true"><Leaf size={16} /></div><Button variant="ghost" className="dynamic-pill h-auto max-w-[min(78vw,18rem)] whitespace-normal text-right" onClick={onPillClick} aria-label={briefing.type === "morning" ? t("showEvening") : t("showMorning")}><PeriodIcon size={13} /><span>{briefing.type === "morning" ? t("morningPill") : t("eveningPill")}</span></Button></div><p className="mb-2 text-sm font-medium capitalize text-muted-foreground">{date}</p><h1 className="flex items-center gap-2 font-display text-[34px] font-semibold leading-tight text-foreground sm:text-4xl"><span>{greetingText}</span><PeriodIcon className="shrink-0" size={30} aria-hidden="true" /></h1><p className="mt-3 max-w-xl text-[17px] leading-7 text-muted-foreground">{t("greetingIntro")}</p></section>;
 }
 
 export function DailySummaryCard({ briefing }: { briefing: Briefing }) {
@@ -29,8 +31,9 @@ export function PriorityCard({ briefing }: { briefing: Briefing }) {
 }
 
 export function CalendarCard({ briefing, expanded = false }: { briefing: Briefing; expanded?: boolean }) {
-  const { t } = useApp();
-  return <CardShell><CardHeading icon={CalendarDays} title={briefing.type === "evening" ? t("tomorrow") : expanded ? t("scheduleOverview") : t("schedule")} action={`${briefing.calendar.length} ${t("events")}`} /><div className="space-y-4">{briefing.calendar.map((item, index) => <div className="grid grid-cols-[52px_minmax(0,1fr)] gap-3" key={item.id}><p className="pt-0.5 text-sm font-semibold text-primary">{new Intl.DateTimeFormat("bg-BG", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(item.start))}</p><div className={cn("min-w-0 border-l-2 pl-3", index === 1 ? "border-accent-strong" : "border-border")}><p className="font-medium">{item.title}</p><p className="mt-1 truncate text-xs text-muted-foreground">{new Intl.DateTimeFormat("bg-BG", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(item.end))}{item.location ? ` · ${item.location}` : ""}</p></div></div>)}</div></CardShell>;
+  const { briefingLanguage, t, user } = useApp();
+  const formatTime = (value: string) => new Intl.DateTimeFormat(briefingLanguage === "bg" ? "bg-BG" : "en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: user.timezone }).format(new Date(value));
+  return <CardShell><CardHeading icon={CalendarDays} title={briefing.type === "evening" ? t("tomorrow") : expanded ? t("scheduleOverview") : t("schedule")} action={`${briefing.calendar.length} ${t("events")}`} /><div className="space-y-4">{briefing.calendar.map((item, index) => <div className="grid grid-cols-[52px_minmax(0,1fr)] gap-3" key={item.id}><p className="pt-0.5 text-sm font-semibold text-primary">{formatTime(item.start)}</p><div className={cn("min-w-0 border-l-2 pl-3", index === 1 ? "border-accent-strong" : "border-border")}><p className="font-medium">{item.title}</p><p className="mt-1 truncate text-xs text-muted-foreground">{formatTime(item.end)}{item.location ? ` · ${item.location}` : ""}</p></div></div>)}</div></CardShell>;
 }
 
 export function WeatherCard({ briefing }: { briefing: Briefing }) {
