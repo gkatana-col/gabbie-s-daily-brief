@@ -47,9 +47,9 @@ export function installNativeBridge() {
   // Development/debug diagnostic: run `await briefNativeDiagnostics()` in the console (or chrome://inspect for the APK).
   if (import.meta.env.DEV || Capacitor.isNativePlatform()) {
     const w = window as unknown as Record<string, unknown>;
-    w.briefNativeDiagnostics = () => nativeBridge.getPlatformInfo();
+    w["briefNativeDiagnostics"] = () => nativeBridge.getPlatformInfo();
     // Dev/test hook for the Live Notification POC: briefLiveNotificationTest.requestPermission() → .start() → .update() → .stop()
-    w.briefLiveNotificationTest = {
+    w["briefLiveNotificationTest"] = {
       requestPermission: () => nativeBridge.requestNotificationPermission(),
       start: () => nativeBridge.startLiveNotification(LIVE_NOTIFICATION_TEST.initial),
       update: () => nativeBridge.updateLiveNotification(LIVE_NOTIFICATION_TEST.updated),
