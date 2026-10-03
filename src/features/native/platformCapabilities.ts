@@ -5,15 +5,14 @@ import type { NativeBridge, PlatformCapabilities } from "./types";
 export function getPlatformCapabilities(bridge: NativeBridge = nativeBridge): PlatformCapabilities {
   const isNativeApp = bridge.isNativeApp();
   const platform = bridge.getPlatform();
-  const android = isNativeApp && platform === "android";
   return {
     isNativeApp,
     platform,
     supportsNowBar: false, // enabled only once a real, approved Android integration exists
-    supportsNativeNotifications: android,
-    supportsNativeCalendar: android,
+    supportsNativeNotifications: false, // each flag flips only when its native module ships
+    supportsNativeCalendar: false,
     supportsHealthData: false,
-    supportsHomeWidget: android,
+    supportsHomeWidget: false,
   };
 }
 

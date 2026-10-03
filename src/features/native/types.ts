@@ -15,11 +15,22 @@ export interface NowBarContent {
   expandable?: boolean;
 }
 
+/** Non-sensitive runtime info only — no device identifiers. */
+export interface PlatformInfo {
+  platform: Platform;
+  native: boolean;
+  capacitor: boolean;
+  androidVersion: string | null;
+  androidSdk: number | null;
+  appVersion: string | null;
+}
+
 export type UnsupportedResult = { supported: false; reason: "web_platform" };
 
 export interface NativeBridge {
   isNativeApp(): boolean;
   getPlatform(): Platform;
+  getPlatformInfo(): Promise<PlatformInfo>;
   openExternalUrl(url: string): Promise<void>;
   requestPermission(permission: string): Promise<boolean>;
   getDeviceTimezone(): string;
