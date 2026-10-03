@@ -31,18 +31,18 @@ export const unavailableHealthDataProvider: HealthDataProvider = {
   getWorkouts: async () => unavailable,
 };
 
-const toItem = (event: CalendarEvent): BriefingCalendarItem => ({ ...event, importance: calculateImportance(event) });
+const toItem = (now: string) => (event: CalendarEvent): BriefingCalendarItem => ({ ...event, importance: calculateImportance(event, now) });
 /** Web calendar provider: reuses the existing mock calendar data. */
 export const mockNativeCalendarProvider: NativeCalendarProvider = {
   source: "mock",
   async getTodayEvents() {
     const input = createMockBriefingInput("morning", "bg");
     const day = input.currentDateTime.slice(0, 10);
-    return input.calendarEvents.filter((e) => e.start.startsWith(day)).map(toItem);
+    return input.calendarEvents.filter((e) => e.start.startsWith(day)).map(toItem(input.currentDateTime));
   },
   async getUpcomingEvents() {
     const input = createMockBriefingInput("morning", "bg");
-    return input.calendarEvents.filter((e) => e.start >= input.currentDateTime).map(toItem);
+    return input.calendarEvents.filter((e) => e.start >= input.currentDateTime).map(toItem(input.currentDateTime));
   },
 };
 
