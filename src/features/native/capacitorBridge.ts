@@ -1,7 +1,7 @@
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { setNativeBridge, webNativeBridge, webPlatformInfo, nativeBridge } from "./nativeBridge";
 import { createCapacitorCalendarProvider, setNativeCalendarProvider } from "./calendarProvider";
-import { createLiveNotificationMethods, LIVE_NOTIFICATION_TEST } from "./liveNotification";
+import { buildInitialTestContent, createLiveNotificationMethods, LIVE_NOTIFICATION_TEST } from "./liveNotification";
 import type { NativeBridge, Platform, PlatformInfo } from "./types";
 
 /** Mirrors android/app/src/main/java/com/brief/app/BriefPlatformPlugin.java. */
