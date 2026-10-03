@@ -159,12 +159,13 @@
 @utility insight-card { background: color-mix(in oklab, var(--card) 84%, var(--accent)); }
 @utility evening-card { background: color-mix(in oklab, var(--card) 90%, var(--secondary)); }
 @utility weather-card { background: color-mix(in oklab, var(--card) 88%, oklch(0.83 0.035 220)); }
-@utility icon-well { display: grid; width: 2rem; height: 2rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: var(--secondary); color: var(--primary); }
+@utility icon-well { display: grid; width: 1.875rem; height: 1.875rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: color-mix(in oklab, var(--secondary) 72%, transparent); color: var(--primary); }
 @utility eyebrow { display: inline-flex; align-items: center; gap: .4rem; border-radius: 999px; background: color-mix(in oklab, var(--primary) 10%, transparent); padding: .35rem .65rem; color: var(--primary); font-size: .7rem; font-weight: 600; }
 @utility dynamic-pill { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid color-mix(in oklab, var(--primary) 18%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--card) 78%, transparent); padding: .45rem .7rem; color: var(--primary); font-size: .7rem; font-weight: 600; backdrop-filter: blur(14px); }
 @utility brand-mark { display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: .65rem; background: var(--primary); color: var(--primary-foreground); }
 @utility priority-row { display: flex; min-height: 3.75rem; align-items: center; gap: .8rem; border-radius: .7rem; padding: .6rem; }
 @utility priority-number { display: grid; width: 1.75rem; height: 1.75rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: var(--secondary); color: var(--primary); font-size: .75rem; font-weight: 700; }
+@utility priority-icon { display: grid; width: 1.75rem; height: 1.75rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: color-mix(in oklab, var(--secondary) 72%, transparent); color: var(--primary); }
 @utility bottom-nav { position: fixed; right: 0; bottom: 0; left: 0; z-index: 40; border-top: 1px solid color-mix(in oklab, var(--border) 75%, transparent); background: color-mix(in oklab, var(--background) 86%, transparent); padding: .4rem .35rem max(.45rem, env(safe-area-inset-bottom)); backdrop-filter: blur(22px); }
 @utility nav-item { display: flex; min-width: 0; min-height: 3.5rem; flex-direction: column; align-items: center; justify-content: center; gap: .25rem; border-radius: .7rem; color: var(--muted-foreground); font-size: .66rem; font-weight: 500; transition: color .18s ease, background .18s ease; }
 @utility nav-item-active { background: color-mix(in oklab, var(--primary) 9%, transparent); color: var(--primary); }
