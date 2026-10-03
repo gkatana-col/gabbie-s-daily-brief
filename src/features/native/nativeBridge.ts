@@ -19,6 +19,10 @@ export const webNativeBridge: NativeBridge = {
   sendNowBarUpdate: async () => undefined,
   clearNowBar: async () => undefined,
   openNativeScreen: async () => undefined,
+  requestNotificationPermission: async () => "unsupported",
+  startLiveNotification: async () => "unsupported",
+  updateLiveNotification: async () => "unsupported",
+  stopLiveNotification: async () => "unsupported",
 };
 
 let activeBridge: NativeBridge = webNativeBridge;
@@ -37,4 +41,8 @@ export const nativeBridge: NativeBridge = {
   sendNowBarUpdate: (data) => activeBridge.sendNowBarUpdate(data).catch(() => undefined),
   clearNowBar: () => activeBridge.clearNowBar().catch(() => undefined),
   openNativeScreen: (screen, params) => activeBridge.openNativeScreen(screen, params).catch(() => undefined),
+  requestNotificationPermission: () => activeBridge.requestNotificationPermission().catch(() => "unsupported" as const),
+  startLiveNotification: (c) => activeBridge.startLiveNotification(c).catch(() => "error" as const),
+  updateLiveNotification: (c) => activeBridge.updateLiveNotification(c).catch(() => "error" as const),
+  stopLiveNotification: () => activeBridge.stopLiveNotification().catch(() => "error" as const),
 };
