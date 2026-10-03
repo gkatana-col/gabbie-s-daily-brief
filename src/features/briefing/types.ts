@@ -81,17 +81,17 @@ export interface BriefingInput {
 export interface BriefingPriority {
   id: string;
   title: string;
-  time?: string;
+  time?: string | undefined;
   completed: boolean;
   importance: ImportanceLevel;
   source: "calendar" | "task" | "personal";
 }
 
-export interface BriefingCalendarItem extends CalendarEvent {
+export interface BriefingCalendarItem extends Omit<CalendarEvent, "importance"> {
   importance: ImportanceLevel;
 }
 
-export interface BriefingNewsItem extends NewsArticle {
+export interface BriefingNewsItem extends Omit<NewsArticle, "importance"> {
   importance: ImportanceLevel;
 }
 

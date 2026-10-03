@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
 import { GreetingCard, DailySummaryCard, PriorityCard, CalendarCard, WeatherCard, NewsCard, InsightCard, EveningRecapCard } from "@/components/briefing/BriefingCards";
-import { mockRawBriefingData } from "@/features/briefing/mockData";
-import { generateBriefing } from "@/features/briefing/briefingEngine";
+import { Button } from "@/components/ui/button";
+import { useBriefing } from "@/features/briefing/useBriefing";
 import { useApp } from "@/features/i18n/I18nProvider";
 
 export const Route = createFileRoute("/")({
@@ -17,7 +16,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { user, language } = useApp();
-  const briefing = useMemo(() => generateBriefing(mockRawBriefingData, user, language), [user, language]);
-  return <div className="space-y-5"><GreetingCard briefing={briefing} /><DailySummaryCard briefing={briefing} /><div className="grid gap-5 md:grid-cols-2"><PriorityCard briefing={briefing} /><CalendarCard briefing={briefing} /><WeatherCard briefing={briefing} /><InsightCard briefing={briefing} /></div><NewsCard briefing={briefing} /><EveningRecapCard briefing={briefing} /></div>;
+  const { briefingType, setBriefingType, t } = useApp();
+  const briefing = useBriefing(briefingType);
+  const toggleBriefing = () => setBriefingType(briefingType === "morning" ? "evening" : "morning");
+  return <div className="space-y-5"><GreetingCard briefing={briefing} onPillClick={toggleBriefing} />{import.meta.env.DEV && <div className="flex justify-end gap-1" aria-label="Brief demo controls"><Button size="sm" variant={briefingType === "morning" ? "secondary" : "ghost"} onClick={() => setBriefingType("morning")}>{t("showMorning")}</Button><Button size="sm" variant={briefingType === "evening" ? "secondary" : "ghost"} onClick={() => setBriefingType("evening")}>{t("showEvening")}</Button></div>}<DailySummaryCard briefing={briefing} /><div className="grid gap-5 md:grid-cols-2"><PriorityCard briefing={briefing} /><CalendarCard briefing={briefing} /><WeatherCard briefing={briefing} /><InsightCard briefing={briefing} /></div><NewsCard briefing={briefing} /><EveningRecapCard briefing={briefing} /></div>;
 }

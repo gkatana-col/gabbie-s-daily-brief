@@ -95,7 +95,7 @@ function buildBriefing(input: BriefingInput): Briefing {
 
   const todayEvents: BriefingCalendarItem[] = input.calendarEvents
     .filter((event) => toDateKey(event.start, timezone) === today)
-    .map((event) => ({ ...event, title: translate(event.title, language), location: event.location ? translate(event.location, language) : undefined, importance: calculateImportance(event, currentDateTime) }))
+    .map((event) => ({ ...event, title: translate(event.title, language), ...(event.location ? { location: translate(event.location, language) } : {}), importance: calculateImportance(event, currentDateTime) }))
     .sort(byImportanceThenTime);
   const tomorrowEvents = input.calendarEvents
     .filter((event) => toDateKey(event.start, timezone) === tomorrow)
@@ -107,7 +107,7 @@ function buildBriefing(input: BriefingInput): Briefing {
   const taskPriorities: BriefingPriority[] = relevantTasks.map((task) => ({
     id: task.id,
     title: translate(task.title, language),
-    time: task.dueAt ? formatTime(task.dueAt, language, timezone) : undefined,
+    ...(task.dueAt ? { time: formatTime(task.dueAt, language, timezone) } : {}),
     completed: task.completed,
     importance: calculateImportance(task, currentDateTime),
     source: "task",
@@ -158,8 +158,9 @@ function buildBriefing(input: BriefingInput): Briefing {
       : (isBg ? `Днес приключи ${completedItems.length} от ${total} планирани ${plural(total, "задача", "задачи")}.` : `You completed ${completedItems.length} of ${total} planned ${plural(total, "task", "tasks")} today.`);
   }
 
-  const tomorrowPreview = tomorrowEvents.length
-    ? (isBg ? `Утре имаш ${tomorrowEvents.length} ${plural(tomorrowEvents.length, "важно събитие", "събития")}. Първото е в ${formatTime(tomorrowEvents[0].start, language, timezone)} ч.` : `Tomorrow you have ${tomorrowEvents.length} ${plural(tomorrowEvents.length, "event", "events")}. The first starts at ${formatTime(tomorrowEvents[0].start, language, timezone)}.`)
+  const firstTomorrowEvent = tomorrowEvents[0];
+  const tomorrowPreview = firstTomorrowEvent
+    ? (isBg ? `Утре имаш ${tomorrowEvents.length} ${plural(tomorrowEvents.length, "важно събитие", "събития")}. Първото е в ${formatTime(firstTomorrowEvent.start, language, timezone)} ч.` : `Tomorrow you have ${tomorrowEvents.length} ${plural(tomorrowEvents.length, "event", "events")}. The first starts at ${formatTime(firstTomorrowEvent.start, language, timezone)}.`)
     : (isBg ? "Няма записани събития за утре." : "No events are scheduled for tomorrow.");
 
   let insight: string;
@@ -168,14 +169,18 @@ function buildBriefing(input: BriefingInput): Briefing {
     : tomorrowPreview;
   else if (todayEvents.length >= 2) {
     const chronological = [...todayEvents].sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
-    const gaps = chronological.slice(0, -1).map((event, index) => ({ start: event.end, end: chronological[index + 1].start, minutes: (new Date(chronological[index + 1].start).getTime() - new Date(event.end).getTime()) / 60_000 })).filter((gap) => gap.minutes >= (userPreferences.focusDurationMinutes ?? 60));
+    const gaps = chronological.slice(0, -1).flatMap((event, index) => {
+      const nextEvent = chronological[index + 1];
+      if (!nextEvent) return [];
+      return [{ start: event.end, end: nextEvent.start, minutes: (new Date(nextEvent.start).getTime() - new Date(event.end).getTime()) / 60_000 }];
+    }).filter((gap) => gap.minutes >= (userPreferences.focusDurationMinutes ?? 60));
     const gap = gaps.sort((a, b) => b.minutes - a.minutes)[0];
     insight = gap
       ? (isBg ? `Имаш свободен прозорец между ${formatTime(gap.start, language, timezone)} и ${formatTime(gap.end, language, timezone)} ч. за фокусирана работа.` : `You have a free window from ${formatTime(gap.start, language, timezone)} to ${formatTime(gap.end, language, timezone)} for focused work.`)
       : (isBg ? "Графикът ти е плътен; няма дълъг свободен прозорец между събитията." : "Your schedule is compact, with no long gap between events.");
   } else if (userPreferences.personalPriorities.length) insight = isBg
-    ? `Личният ти приоритет е „${translate(userPreferences.personalPriorities[0], language)}“.`
-    : `Your personal priority is “${translate(userPreferences.personalPriorities[0], language)}.”`;
+    ? `Личният ти приоритет е „${translate(userPreferences.personalPriorities[0] ?? "", language)}“. `
+    : `Your personal priority is “${translate(userPreferences.personalPriorities[0] ?? "", language)}.”`;
   else insight = isBg ? "Няма достатъчно данни за допълнителен извод." : "There is not enough data for an additional insight.";
 
   return {
@@ -183,7 +188,7 @@ function buildBriefing(input: BriefingInput): Briefing {
     greeting: briefingType === "morning" ? (isBg ? "Добро утро ☀️" : "Good morning ☀️") : (isBg ? "Добър вечер 🌙" : "Good evening 🌙"),
     summary,
     priorities,
-    calendar: briefingType === "morning" ? todayEvents : tomorrowEvents.map((event) => ({ ...event, title: translate(event.title, language), location: event.location ? translate(event.location, language) : undefined, importance: calculateImportance(event, currentDateTime) })),
+    calendar: briefingType === "morning" ? todayEvents : tomorrowEvents.map((event) => ({ ...event, title: translate(event.title, language), ...(event.location ? { location: translate(event.location, language) } : {}), importance: calculateImportance(event, currentDateTime) })),
     weather,
     news,
     insight,
