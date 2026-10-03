@@ -1,5 +1,6 @@
 import type { Briefing } from "@/features/briefing/types";
 import { useApp } from "@/features/i18n/I18nProvider";
+import { useNativeCalendarEvents } from "@/features/native/useNativeCalendar";
 import { BriefIcon, type BriefIconName } from "@/components/BriefIcon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
