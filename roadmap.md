@@ -9,3 +9,5 @@
 - [x] Connect the Dynamic Briefing Pill and discreet development-only morning/evening switching without redesigning the app.
 - [x] Cover Bulgarian, English, empty and missing data, multiple events/news, importance, and cache behavior with tests.
 - [x] Verify TypeScript/build health, console health, mobile layout, pill switching, and briefing-language independence.
+- [ ] Add the reusable Brief Home Widget, browser-neutral data provider, and development preview.
+- [ ] Verify morning, evening, inactive, Bulgarian, English, all widget sizes, themes, and narrow-screen overflow.

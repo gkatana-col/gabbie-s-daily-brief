@@ -170,4 +170,51 @@
 @utility nav-item { display: flex; min-width: 0; min-height: 3.5rem; flex-direction: column; align-items: center; justify-content: center; gap: .25rem; border-radius: .7rem; color: var(--muted-foreground); font-size: .66rem; font-weight: 500; transition: color .18s ease, background .18s ease; }
 @utility nav-item-active { background: color-mix(in oklab, var(--primary) 9%, transparent); color: var(--primary); }
 
+@utility brief-home-widget {
+  display: flex;
+  width: 100%;
+  appearance: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--border) 62%, transparent);
+  background: color-mix(in oklab, var(--card) 78%, transparent);
+  color: var(--foreground);
+  box-shadow: 0 12px 34px oklch(0.25 0.022 165 / 0.11);
+  text-align: left;
+  backdrop-filter: blur(18px) saturate(115%);
+  transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+  &:hover { background: color-mix(in oklab, var(--card) 86%, transparent); }
+  &:active { transform: scale(.985); box-shadow: 0 6px 18px oklch(0.25 0.022 165 / 0.1); }
+  &:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+}
+@utility brief-home-widget-4x2 { aspect-ratio: 2 / 1; max-width: 22rem; justify-content: space-between; border-radius: 2rem; padding: 1.15rem 1.25rem; }
+@utility brief-home-widget-4x1 { min-height: 5.5rem; max-width: 22rem; justify-content: center; border-radius: 1.5rem; padding: .85rem 1rem; }
+@utility brief-home-widget-compact { width: 9.75rem; height: 9.75rem; justify-content: space-between; border-radius: 2rem; padding: 1rem; }
+@utility widget-heading { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .7rem; min-width: 0; }
+@utility widget-period-icon { display: grid; width: 2.4rem; height: 2.4rem; flex-shrink: 0; place-items: center; border-radius: .9rem; background: color-mix(in oklab, var(--accent) 72%, transparent); color: var(--primary); }
+@utility widget-brand { color: var(--primary); font-size: .65rem; font-weight: 700; line-height: 1; }
+@utility widget-title { margin-top: .2rem; overflow: hidden; color: var(--foreground); font-family: var(--font-display); font-size: 1.12rem; font-weight: 600; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
+@utility widget-time { align-self: start; color: var(--muted-foreground); font-size: .62rem; font-weight: 500; }
+@utility widget-summary { margin-top: .55rem; overflow: hidden; color: var(--foreground); font-size: .82rem; font-weight: 600; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+@utility widget-items { display: grid; gap: .35rem; margin-top: .55rem; border-top: 1px solid color-mix(in oklab, var(--border) 58%, transparent); padding-top: .55rem; }
+@utility widget-item { display: flex; min-width: 0; align-items: center; gap: .5rem; color: var(--muted-foreground); font-size: .72rem; line-height: 1.15; & svg { flex-shrink: 0; color: var(--primary); } & span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+@utility android-preview { position: relative; min-height: 34rem; overflow: hidden; border: 1px solid color-mix(in oklab, var(--border) 65%, transparent); border-radius: 2rem; background: linear-gradient(145deg, color-mix(in oklab, var(--accent) 38%, var(--background)), color-mix(in oklab, var(--secondary) 68%, var(--background))); padding: 1rem; box-shadow: inset 0 1px color-mix(in oklab, var(--card) 70%, transparent); }
+@utility android-status { display: flex; align-items: center; justify-content: space-between; color: var(--foreground); font-size: .66rem; font-weight: 600; }
+@utility android-date { margin: 2.2rem 0 3.2rem; color: var(--foreground); & p:first-child { font-size: .75rem; color: var(--muted-foreground); } & p:last-child { margin-top: .2rem; font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; } }
+@utility android-preview-note { position: absolute; right: 1.15rem; bottom: 1rem; color: var(--muted-foreground); font-size: .65rem; font-weight: 600; }
+
+.brief-home-widget-4x1 .widget-summary { margin-top: .35rem; }
+.brief-home-widget-4x1 .widget-items { display: none; }
+.brief-home-widget-4x1 .widget-period-icon { width: 2.2rem; height: 2.2rem; }
+.brief-home-widget-compact .widget-heading { grid-template-columns: auto minmax(0, 1fr); }
+.brief-home-widget-compact .widget-time { display: none; }
+.brief-home-widget-compact .widget-title { font-size: .95rem; }
+.brief-home-widget-compact .widget-summary { white-space: normal; font-size: .75rem; line-height: 1.35; }
+
+@media (max-width: 359px) {
+  .brief-home-widget-4x2 { padding: 1rem; }
+  .widget-title { font-size: 1rem; }
+  .widget-item { font-size: .68rem; }
+}
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
