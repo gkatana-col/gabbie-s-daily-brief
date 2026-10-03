@@ -11,5 +11,7 @@ export default defineConfig({
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // SPA mode: emit a static client shell at dist/client/index.html (for a future Capacitor WebView).
+    spa: { enabled: true, prerender: { outputPath: "/index.html", crawlLinks: false } },
   },
 });
