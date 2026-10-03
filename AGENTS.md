@@ -11,3 +11,4 @@
 
 - Keep localization dictionaries, structured source data, briefing processing, and presentation components separate so future AI and API integrations can replace mocks without changing the UI.
 - Treat Brief as a manifest-only installable web app; do not add an app-shell service worker unless offline behavior is explicitly requested.
+- Keep the Briefing Engine deterministic and provider-agnostic behind a stable structured input/output contract so mock adapters can later be replaced without UI changes.

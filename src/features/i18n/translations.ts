@@ -14,6 +14,7 @@ export const translations = {
     importantUpdates: "Важни промени", eveningRecap: "Вечерен Brief", notificationsHint: "Избери кои моменти заслужават вниманието ти.",
     appearanceHint: "Brief следва системната тема по подразбиране.", aiLabel: "Динамичен Brief", feelsLike: "Усеща се като", high: "Макс.", low: "Мин.",
     events: "събития", noMoreEvents: "Нямаш други събития днес.", focusTime: "Време за фокус", greetingIntro: "Ето какво е важно за теб днес.",
+    morningPill: "Добро утро • Твоят ден", eveningPill: "Вечерен обзор", showMorning: "Сутрешен Brief", showEvening: "Вечерен Brief", noWeather: "Няма данни за времето", tomorrow: "Утре",
   },
   en: {
     brand: "Brief", home: "Home", today: "Today", news: "News", calendar: "Calendar", settings: "Settings",
@@ -28,6 +29,7 @@ export const translations = {
     importantUpdates: "Important updates", eveningRecap: "Evening Brief", notificationsHint: "Choose which moments deserve your attention.",
     appearanceHint: "Brief follows your system theme by default.", aiLabel: "Dynamic Brief", feelsLike: "Feels like", high: "High", low: "Low",
     events: "events", noMoreEvents: "You have no other events today.", focusTime: "Focus time", greetingIntro: "Here’s what matters for you today.",
+    morningPill: "Good morning • Your day", eveningPill: "Evening recap", showMorning: "Morning Brief", showEvening: "Evening Brief", noWeather: "Weather unavailable", tomorrow: "Tomorrow",
   },
 } as const;
 
