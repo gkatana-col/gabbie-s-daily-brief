@@ -16,7 +16,7 @@ export interface DiscoverSourceStory {
   context?: LocalizedText;
   source: { name: string; url: string };
   publishedAt: string;
-  imageUrl?: string;
+  imageUrl?: string | undefined;
   readingMinutes: number;
   important?: boolean;
 }
@@ -36,12 +36,12 @@ export interface DiscoverStory {
   headline: string;
   summary: string;
   aiSummary: boolean;
-  whyItMatters?: string;
+  whyItMatters?: string | undefined;
   keyPoints: string[];
   source: { name: string; url: string };
   relatedSources: string[];
   publishedAt: string;
-  imageUrl?: string;
+  imageUrl?: string | undefined;
   readingMinutes: number;
   important: boolean;
   score: number;
