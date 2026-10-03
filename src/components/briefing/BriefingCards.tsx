@@ -1,5 +1,6 @@
 import type { Briefing } from "@/features/briefing/types";
 import { useApp } from "@/features/i18n/I18nProvider";
+import { useNativeCalendarEvents } from "@/features/native/useNativeCalendar";
 import { BriefIcon, type BriefIconName } from "@/components/BriefIcon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,8 +32,13 @@ export function PriorityCard({ briefing }: { briefing: Briefing }) {
 
 export function CalendarCard({ briefing, expanded = false }: { briefing: Briefing; expanded?: boolean }) {
   const { briefingLanguage, t, user } = useApp();
-  const formatTime = (value: string) => new Intl.DateTimeFormat(briefingLanguage === "bg" ? "bg-BG" : "en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: user.timezone }).format(new Date(value));
-  return <CardShell><CardHeading icon="calendar" title={briefing.type === "evening" ? t("tomorrow") : expanded ? t("scheduleOverview") : t("schedule")} action={`${briefing.calendar.length} ${t("events")}`} /><div className="space-y-4">{briefing.calendar.map((item, index) => <div className="grid grid-cols-[52px_minmax(0,1fr)] gap-3" key={item.id}><p className="flex items-center gap-1 pt-0.5 text-sm font-semibold text-primary"><BriefIcon name="time" size={12} />{formatTime(item.start)}</p><div className={cn("min-w-0 border-l-2 pl-3", index === 1 ? "border-accent-strong" : "border-border")}><p className="flex items-center gap-2 font-medium"><BriefIcon className="shrink-0 text-muted-foreground" name={item.title.toLocaleLowerCase().includes("универс") || item.title.toLocaleLowerCase().includes("university") ? "university" : "work"} size={14} />{item.title}</p><p className="mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground"><BriefIcon className="shrink-0" name={item.location ? "location" : "time"} size={12} /><span className="truncate">{formatTime(item.end)}{item.location ? ` · ${item.location}` : ""}</span></p></div></div>)}</div></CardShell>;
+  const nativeCalendar = useNativeCalendarEvents();
+  const locale = briefingLanguage === "bg" ? "bg-BG" : "en-GB";
+  const formatTime = (value: string) => new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: user.timezone }).format(new Date(value));
+  const formatDate = (value: string) => new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short", timeZone: user.timezone }).format(new Date(value));
+  const isToday = (value: string) => { const d = new Date(value); const now = new Date(); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate(); };
+  if (nativeCalendar.status === "permission_denied") return <CardShell><CardHeading icon="calendar" title={expanded ? t("scheduleOverview") : t("schedule")} /><div className="space-y-3"><p className="flex items-center gap-2 text-sm font-medium"><BriefIcon className="text-muted-foreground" name="calendar" size={15} />{t("calendarPermissionTitle")}</p><p className="text-xs leading-5 text-muted-foreground">{t("calendarPermissionHint")}</p><Button size="sm" variant="secondary" onClick={() => void nativeCalendar.requestAccess()}>{t("calendarAllowAccess")}</Button></div></CardShell>;
+  return <CardShell><CardHeading icon="calendar" title={briefing.type === "evening" ? t("tomorrow") : expanded ? t("scheduleOverview") : t("schedule")} action={`${briefing.calendar.length} ${t("events")}`} /><div className="space-y-4">{briefing.calendar.map((item, index) => <div className="grid grid-cols-[52px_minmax(0,1fr)] gap-3" key={item.id}><p className="flex items-center gap-1 pt-0.5 text-sm font-semibold text-primary"><BriefIcon name="time" size={12} />{formatTime(item.start)}</p><div className={cn("min-w-0 border-l-2 pl-3", index === 1 ? "border-accent-strong" : "border-border")}><p className="flex items-center gap-2 font-medium"><BriefIcon className="shrink-0 text-muted-foreground" name={item.title.toLocaleLowerCase().includes("универс") || item.title.toLocaleLowerCase().includes("university") ? "university" : "work"} size={14} />{item.title}</p><p className="mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground"><BriefIcon className="shrink-0" name={item.location ? "location" : "time"} size={12} /><span className="truncate">{isToday(item.start) ? "" : `${formatDate(item.start)} · `}{formatTime(item.end)}{item.location ? ` · ${item.location}` : ""}</span></p></div></div>)}</div></CardShell>;
 }
 
 export function WeatherCard({ briefing }: { briefing: Briefing }) {
