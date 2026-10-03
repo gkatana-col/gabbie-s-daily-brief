@@ -1,9 +1,12 @@
-import type { NativeBridge } from "./types";
+import type { NativeBridge, PlatformInfo } from "./types";
+
+export const webPlatformInfo: PlatformInfo = { platform: "web", native: false, capacitor: false, androidVersion: null, androidSdk: null, appVersion: null };
 
 /** Safe browser implementation. Never throws because a native layer is missing. */
 export const webNativeBridge: NativeBridge = {
   isNativeApp: () => false,
   getPlatform: () => "web",
+  getPlatformInfo: async () => ({ ...webPlatformInfo }),
   async openExternalUrl(url) {
     if (typeof window === "undefined") return;
     window.open(url, "_blank", "noopener,noreferrer");
@@ -26,6 +29,7 @@ export function resetNativeBridge() { activeBridge = webNativeBridge; }
 export const nativeBridge: NativeBridge = {
   isNativeApp: () => activeBridge.isNativeApp(),
   getPlatform: () => activeBridge.getPlatform(),
+  getPlatformInfo: () => activeBridge.getPlatformInfo().catch(() => ({ ...webPlatformInfo })),
   openExternalUrl: (url) => activeBridge.openExternalUrl(url).catch(() => undefined),
   requestPermission: (permission) => activeBridge.requestPermission(permission).catch(() => false),
   getDeviceTimezone: () => activeBridge.getDeviceTimezone(),
