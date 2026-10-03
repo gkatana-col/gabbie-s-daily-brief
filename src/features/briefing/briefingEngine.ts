@@ -185,7 +185,7 @@ function buildBriefing(input: BriefingInput): Briefing {
 
   return {
     type: briefingType,
-    greeting: briefingType === "morning" ? (isBg ? "Добро утро ☀️" : "Good morning ☀️") : (isBg ? "Добър вечер 🌙" : "Good evening 🌙"),
+    greeting: briefingType === "morning" ? (isBg ? "Добро утро" : "Good morning") : (isBg ? "Добър вечер" : "Good evening"),
     summary,
     priorities,
     calendar: briefingType === "morning" ? todayEvents : tomorrowEvents.map((event) => ({ ...event, title: translate(event.title, language), ...(event.location ? { location: translate(event.location, language) } : {}), importance: calculateImportance(event, currentDateTime) })),
