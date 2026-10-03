@@ -5,18 +5,26 @@ import { useDiscoverPreferences } from "@/features/discover/DiscoverPreferences"
 import { discoverFeedProvider } from "@/features/discover/MockDiscoverFeedProvider";
 import { rankDiscoverStories, toBriefingNews } from "@/features/discover/discoverEngine";
 import { categoryKey } from "@/features/discover/useDiscoverFeed";
+import { useNativeCalendarEvents, type NativeCalendarState } from "@/features/native/useNativeCalendar";
 import { generateCachedBriefing } from "./briefingEngine";
 import { createMockBriefingInput } from "./mockData";
-import type { BriefingType } from "./types";
+import type { BriefingInput, BriefingType } from "./types";
+
+/** Replaces mock calendar events with real device events only when native access is granted and returned events. */
+export function applyNativeCalendar(input: BriefingInput, nativeCalendar: Pick<NativeCalendarState, "status" | "items">): BriefingInput {
+  if (nativeCalendar.status !== "ok" || nativeCalendar.items.length === 0) return input;
+  return { ...input, calendarEvents: nativeCalendar.items.map((item) => ({ ...item })) };
+}
 
 export function useBriefing(type: BriefingType) {
   const { user, briefingLanguage } = useApp();
   const { preferences } = useDiscoverPreferences();
+  const nativeCalendar = useNativeCalendarEvents();
   return useMemo(() => {
-    const input = createMockBriefingInput(type, briefingLanguage, user);
+    const input = applyNativeCalendar(createMockBriefingInput(type, briefingLanguage, user), nativeCalendar);
     // Discover stays a separate module; the briefing only receives its top few ranked stories as plain news input.
     const ranked = rankDiscoverStories(discoverFeedProvider.getSnapshot(), { ...preferences, language: briefingLanguage }, discoverFeedProvider.now());
     input.news = toBriefingNews(ranked, (story) => getTranslation(briefingLanguage, categoryKey(story.category)), 3);
     return generateCachedBriefing(input);
-  }, [briefingLanguage, type, user, preferences]);
+  }, [briefingLanguage, type, user, preferences, nativeCalendar]);
 }
