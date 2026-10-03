@@ -1,24 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { GreetingCard, DailySummaryCard, PriorityCard, CalendarCard, WeatherCard, NewsCard, InsightCard, EveningRecapCard } from "@/components/briefing/BriefingCards";
+import { mockRawBriefingData } from "@/features/briefing/mockData";
+import { generateBriefing } from "@/features/briefing/briefingEngine";
+import { useApp } from "@/features/i18n/I18nProvider";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({ meta: [
+    { title: "Brief — Твоят личен дневен обзор" },
+    { name: "description", content: "Спокоен, интелигентен дневен обзор с приоритети, календар, време и новини." },
+    { property: "og:title", content: "Brief — Твоят личен дневен обзор" },
+    { property: "og:description", content: "Всичко важно за деня, събрано на едно спокойно място." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
+  ] }),
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+  const { user, language } = useApp();
+  const briefing = useMemo(() => generateBriefing(mockRawBriefingData, user, language), [user, language]);
+  return <div className="space-y-5"><GreetingCard briefing={briefing} /><DailySummaryCard briefing={briefing} /><div className="grid gap-5 md:grid-cols-2"><PriorityCard briefing={briefing} /><CalendarCard briefing={briefing} /><WeatherCard briefing={briefing} /><InsightCard briefing={briefing} /></div><NewsCard briefing={briefing} /><EveningRecapCard briefing={briefing} /></div>;
 }
