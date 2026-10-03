@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppProvider } from "../features/i18n/I18nProvider";
+import { DiscoverPreferencesProvider } from "../features/discover/DiscoverPreferences";
 import { AppShell } from "../components/layout/AppShell";
 
 function NotFoundComponent() {
@@ -123,9 +124,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
-        <AppShell>
+        <DiscoverPreferencesProvider><AppShell>
           <Outlet />
-        </AppShell>
+        </AppShell></DiscoverPreferencesProvider>
       </AppProvider>
     </QueryClientProvider>
   );

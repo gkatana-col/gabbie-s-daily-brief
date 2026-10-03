@@ -1,3 +1,4 @@
+import { discoverTranslations } from "@/features/discover/translations";
 import type { ResolvedLanguage } from "@/features/briefing/types";
 
 export const translations = {
@@ -16,6 +17,7 @@ export const translations = {
     events: "събития", noMoreEvents: "Нямаш други събития днес.", focusTime: "Време за фокус", greetingIntro: "Ето какво е важно за теб днес.",
     morningPill: "Добро утро • Твоят ден", eveningPill: "Вечерен обзор", showMorning: "Сутрешен Brief", showEvening: "Вечерен Brief", noWeather: "Няма данни за времето", tomorrow: "Утре",
     widgetPreviewTitle: "Home Screen Widget Preview", widgetPreviewSubtitle: "Визуален PWA преглед на Brief за начален екран.", widgetPreviewModes: "Режим на прегледа", widgetMorning: "Сутрин", widgetEvening: "Вечер", widgetCompact: "Компактен", widgetOpenBrief: "Отвори Brief", widgetPreviewDay: "Събота", widgetPreviewDate: "3 октомври",
+    ...discoverTranslations.bg,
   },
   en: {
     brand: "Brief", home: "Home", today: "Today", news: "News", calendar: "Calendar", settings: "Settings",
@@ -32,6 +34,7 @@ export const translations = {
     events: "events", noMoreEvents: "You have no other events today.", focusTime: "Focus time", greetingIntro: "Here’s what matters for you today.",
     morningPill: "Good morning • Your day", eveningPill: "Evening recap", showMorning: "Morning Brief", showEvening: "Evening Brief", noWeather: "Weather unavailable", tomorrow: "Tomorrow",
     widgetPreviewTitle: "Home Screen Widget Preview", widgetPreviewSubtitle: "A visual PWA preview of Brief for your home screen.", widgetPreviewModes: "Preview mode", widgetMorning: "Morning", widgetEvening: "Evening", widgetCompact: "Compact", widgetOpenBrief: "Open Brief", widgetPreviewDay: "Saturday", widgetPreviewDate: "3 October",
+    ...discoverTranslations.en,
   },
 } as const;
 
