@@ -1,10 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { PageHeader } from "./today";
 import { BriefIcon, type BriefIconName } from "@/components/BriefIcon";
 import { useApp } from "@/features/i18n/I18nProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { nativeBridge } from "@/features/native/nativeBridge";
 import type { LanguagePreference, ThemePreference, User } from "@/features/briefing/types";
+
+type LiveNotificationTestHook = Record<"requestPermission" | "start" | "update" | "stop", () => Promise<unknown>>;
+function getLiveNotificationTestHook(): LiveNotificationTestHook | undefined {
+  if (typeof window === "undefined") return undefined;
+  return (window as unknown as Record<string, unknown>)["briefLiveNotificationTest"] as LiveNotificationTestHook | undefined;
+}
 
 export const Route = createFileRoute("/settings")({ component: SettingsPage, head: () => ({ meta: [{ title: "Настройки — Brief" }, { name: "description", content: "Език, тема и известия за твоя Brief." }, { property: "og:title", content: "Настройки — Brief" }, { property: "og:description", content: "Персонализирай езика, темата и известията си." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }) });
 
