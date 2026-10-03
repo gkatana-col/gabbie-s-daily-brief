@@ -16,6 +16,19 @@ const emptyInput = (language: ResolvedLanguage = "bg"): BriefingInput => ({
 describe("briefingEngine", () => {
   beforeEach(clearBriefingCache);
 
+  it("labels the time of day from the device's local hour", () => {
+    expect(getTimeOfDayGreeting(5, "bg")).toBe("Добро утро");
+    expect(getTimeOfDayGreeting(10, "bg")).toBe("Добро утро");
+    expect(getTimeOfDayGreeting(11, "bg")).toBe("Добър ден");
+    expect(getTimeOfDayGreeting(16, "bg")).toBe("Добър ден"); // 16:59 → Midday
+    expect(getTimeOfDayGreeting(17, "bg")).toBe("Добър вечер"); // 17:00 → Evening
+    expect(getTimeOfDayGreeting(21, "bg")).toBe("Добър вечер");
+    expect(getTimeOfDayGreeting(22, "bg")).toBe("Добър вечер"); // night
+    expect(getTimeOfDayGreeting(4, "bg")).toBe("Добър вечер"); // night
+    expect(getTimeOfDayGreeting(11, "en")).toBe("Good afternoon");
+    expect(getTimeOfDayGreeting(17, "en")).toBe("Good evening");
+  });
+
   it("generates a concise Bulgarian Morning Brief from supplied facts", () => {
     const briefing = generateBriefing(createMockBriefingInput("morning", "bg"));
     expect(briefing).toMatchObject({ type: "morning", greeting: getTimeOfDayGreeting(new Date().getHours(), "bg") });
