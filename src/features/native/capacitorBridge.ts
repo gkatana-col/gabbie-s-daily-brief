@@ -1,5 +1,6 @@
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { setNativeBridge, webNativeBridge, webPlatformInfo, nativeBridge } from "./nativeBridge";
+import { createCapacitorCalendarProvider, setNativeCalendarProvider } from "./calendarProvider";
 import type { NativeBridge, Platform, PlatformInfo } from "./types";
 
 /** Mirrors android/app/src/main/java/com/brief/app/BriefPlatformPlugin.java. */
@@ -33,7 +34,14 @@ let installed = false;
 export function installNativeBridge() {
   if (installed || typeof window === "undefined") return;
   installed = true;
-  if (Capacitor.isNativePlatform()) setNativeBridge(createCapacitorBridge());
+  if (Capacitor.isNativePlatform()) {
+    setNativeBridge(createCapacitorBridge());
+    if (Capacitor.getPlatform() === "android" && Capacitor.isPluginAvailable("BriefCalendar")) {
+      const provider = createCapacitorCalendarProvider();
+      setNativeCalendarProvider(provider);
+      void provider.checkPermission(); // reads state only, never prompts
+    }
+  }
   // Development/debug diagnostic: run `await briefNativeDiagnostics()` in the console (or chrome://inspect for the APK).
   if (import.meta.env.DEV || Capacitor.isNativePlatform()) {
     (window as unknown as { briefNativeDiagnostics: () => Promise<PlatformInfo> }).briefNativeDiagnostics = () => nativeBridge.getPlatformInfo();

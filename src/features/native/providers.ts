@@ -35,6 +35,9 @@ const toItem = (now: string) => (event: CalendarEvent): BriefingCalendarItem => 
 /** Web calendar provider: reuses the existing mock calendar data. */
 export const mockNativeCalendarProvider: NativeCalendarProvider = {
   source: "mock",
+  checkPermission: async () => "unsupported",
+  requestPermission: async () => "unsupported",
+  getEvents: async () => ({ status: "unsupported", events: [] }),
   async getTodayEvents() {
     const input = createMockBriefingInput("morning", "bg");
     const day = input.currentDateTime.slice(0, 10);
