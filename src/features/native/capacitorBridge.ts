@@ -1,7 +1,7 @@
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { setNativeBridge, webNativeBridge, webPlatformInfo, nativeBridge } from "./nativeBridge";
 import { createCapacitorCalendarProvider, setNativeCalendarProvider } from "./calendarProvider";
-import { createLiveNotificationMethods, LIVE_NOTIFICATION_TEST } from "./liveNotification";
+import { buildInitialTestContent, createLiveNotificationMethods, LIVE_NOTIFICATION_TEST } from "./liveNotification";
 import type { NativeBridge, Platform, PlatformInfo } from "./types";
 
 /** Mirrors android/app/src/main/java/com/brief/app/BriefPlatformPlugin.java. */
@@ -51,7 +51,7 @@ export function installNativeBridge() {
     // Dev/test hook for the Live Notification POC: briefLiveNotificationTest.requestPermission() → .start() → .update() → .stop()
     w["briefLiveNotificationTest"] = {
       requestPermission: () => nativeBridge.requestNotificationPermission(),
-      start: () => nativeBridge.startLiveNotification(LIVE_NOTIFICATION_TEST.initial),
+      start: () => nativeBridge.startLiveNotification(buildInitialTestContent()),
       update: () => nativeBridge.updateLiveNotification(LIVE_NOTIFICATION_TEST.updated),
       stop: () => nativeBridge.stopLiveNotification(),
     };
