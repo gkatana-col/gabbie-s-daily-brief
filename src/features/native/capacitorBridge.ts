@@ -51,7 +51,7 @@ export function installNativeBridge() {
     // Dev/test hook for the Live Notification POC: briefLiveNotificationTest.requestPermission() → .start() → .update() → .stop()
     w["briefLiveNotificationTest"] = {
       requestPermission: () => nativeBridge.requestNotificationPermission(),
-      start: () => nativeBridge.startLiveNotification(LIVE_NOTIFICATION_TEST.initial),
+      start: () => nativeBridge.startLiveNotification(buildInitialTestContent()),
       update: () => nativeBridge.updateLiveNotification(LIVE_NOTIFICATION_TEST.updated),
       stop: () => nativeBridge.stopLiveNotification(),
     };

@@ -1,4 +1,5 @@
 import { registerPlugin } from "@capacitor/core";
+import { getTimeOfDayGreeting } from "@/features/briefing/briefingEngine";
 import type { LiveNotificationContent, LiveNotificationStatus, NativeBridge, NotificationPermissionState } from "./types";
 
 /** Mirrors android/.../BriefLiveNotificationPlugin.java. */
