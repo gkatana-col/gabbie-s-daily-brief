@@ -11,7 +11,7 @@ export interface BriefLiveNotificationPlugin {
 
 /** POC test content (development hook only). */
 export const LIVE_NOTIFICATION_TEST = {
-  initial: { title: "Brief · Добро утро", text: "Твоят ден започва", progress: 25 },
+  initial: { title: "Brief · Добро утро", text: "Твоят ден започва", progress: 25, period: "morning" },
   updated: { title: "Brief · Обновено", text: "Live briefing е активно", progress: 75 },
 } satisfies Record<string, LiveNotificationContent>;
 

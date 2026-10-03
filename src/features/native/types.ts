@@ -25,7 +25,9 @@ export interface PlatformInfo {
   appVersion: string | null;
 }
 
-export interface LiveNotificationContent { title: string; text: string; progress?: number /* 0–100 */ }
+export type BriefTimeOfDay = "morning" | "day" | "evening" | "night";
+/** period: optional visual accent only; omitted → device local time picks it natively. */
+export interface LiveNotificationContent { title: string; text: string; progress?: number /* 0–100 */; period?: BriefTimeOfDay }
 export type LiveNotificationStatus = "shown" | "updated" | "stopped" | "unsupported" | "permission_denied" | "error";
 export type NotificationPermissionState = "granted" | "denied" | "prompt" | "unsupported";
 
