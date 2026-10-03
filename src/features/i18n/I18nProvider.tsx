@@ -21,7 +21,11 @@ const AppContext = createContext<AppContextValue | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User>(mockUser);
   const [systemLanguage, setSystemLanguage] = useState<ResolvedLanguage>("bg");
-  const [briefingType, setBriefingType] = useState<BriefingType>("morning");
+  // Default briefing from the device's local hour: 05:00–16:59 morning, 17:00–04:59 evening.
+  const [briefingType, setBriefingType] = useState<BriefingType>(() => {
+    const hour = new Date().getHours();
+    return hour >= 5 && hour <= 16 ? "morning" : "evening";
+  });
 
   useEffect(() => {
     setSystemLanguage(navigator.language.toLowerCase().startsWith("bg") ? "bg" : "en");
