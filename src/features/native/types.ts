@@ -57,8 +57,27 @@ export interface HealthDataProvider {
   getWorkouts(date: string): Promise<HealthResult<HealthSample<{ type: string; minutes: number }>[]>>;
 }
 
+/** Read-only calendar event: only the fields Brief needs. */
+export interface NativeCalendarEvent {
+  id: string;
+  title: string;
+  startTime: string; // ISO
+  endTime: string; // ISO
+  allDay: boolean;
+  calendarName: string;
+}
+export type CalendarPermissionState = "granted" | "denied" | "prompt" | "unsupported";
+export type CalendarEventsResult =
+  | { status: "ok"; events: NativeCalendarEvent[] }
+  | { status: "permission_denied" | "unsupported" | "error"; events: [] };
+
 export interface NativeCalendarProvider {
   source: "mock" | "native";
+  /** Never prompts. */
+  checkPermission(): Promise<CalendarPermissionState>;
+  /** Prompts only when called — i.e. after the user explicitly enables Calendar integration. */
+  requestPermission(): Promise<CalendarPermissionState>;
+  getEvents(from: Date, to: Date): Promise<CalendarEventsResult>;
   getTodayEvents(): Promise<BriefingCalendarItem[]>;
   getUpcomingEvents(): Promise<BriefingCalendarItem[]>;
 }
