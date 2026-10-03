@@ -18,7 +18,7 @@ describe("briefingEngine", () => {
 
   it("generates a concise Bulgarian Morning Brief from supplied facts", () => {
     const briefing = generateBriefing(createMockBriefingInput("morning", "bg"));
-    expect(briefing).toMatchObject({ type: "morning", greeting: "Добро утро ☀️" });
+    expect(briefing).toMatchObject({ type: "morning", greeting: "Добро утро" });
     expect(briefing.summary).toContain("3 ангажимента");
     expect(briefing.calendar).toHaveLength(3);
     expect(briefing.news).toHaveLength(3);
@@ -27,7 +27,7 @@ describe("briefingEngine", () => {
 
   it("generates an Evening Brief with only evidenced completion and tomorrow data", () => {
     const briefing = generateBriefing(createMockBriefingInput("evening", "bg"));
-    expect(briefing.greeting).toBe("Добър вечер 🌙");
+    expect(briefing.greeting).toBe("Добър вечер");
     expect(briefing.summary).toBe("Днес приключи 1 от 3 планирани задачи.");
     expect(briefing.completedItems.map((item) => item.id)).toEqual(["t1"]);
     expect(briefing.unfinishedItems.map((item) => item.id)).toEqual(["t2", "t3"]);
@@ -37,7 +37,7 @@ describe("briefingEngine", () => {
 
   it("returns natural English independently of interface copy", () => {
     const briefing = generateBriefing(createMockBriefingInput("morning", "en"));
-    expect(briefing.greeting).toBe("Good morning ☀️");
+    expect(briefing.greeting).toBe("Good morning");
     expect(briefing.summary).toBe("Today you have 3 events and 2 tasks.");
     expect(briefing.calendar.some((item) => item.title === "University")).toBe(true);
     expect(briefing.weather.condition).toBe("Mostly sunny");
