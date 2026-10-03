@@ -11,9 +11,17 @@ export interface BriefLiveNotificationPlugin {
 
 /** POC test content (development hook only). */
 export const LIVE_NOTIFICATION_TEST = {
-  initial: { title: "Brief · Добро утро", text: "Твоят ден започва", progress: 25, period: "morning" },
   updated: { title: "Brief · Обновено", text: "Live briefing е активно", progress: 75 },
 } satisfies Record<string, LiveNotificationContent>;
+
+/**
+ * Initial test content built at call time from the device's CURRENT LOCAL hour:
+ * 05–10 „Добро утро“, 11–16 „Добър ден“, 17–21 „Добър вечер“, 22–04 „Добър вечер“ (night keeps the evening label).
+ * Period is omitted so the native side resolves the accent from local time too.
+ */
+export function buildInitialTestContent(now: Date = new Date()): LiveNotificationContent {
+  return { title: `Brief · ${getTimeOfDayGreeting(now.getHours(), "bg")}`, text: "Твоят ден започва", progress: 25 };
+}
 
 const STATUSES: LiveNotificationStatus[] = ["shown", "updated", "stopped", "unsupported", "permission_denied", "error"];
 const toStatus = (value: unknown): LiveNotificationStatus => (STATUSES.includes(value as LiveNotificationStatus) ? (value as LiveNotificationStatus) : "error");
