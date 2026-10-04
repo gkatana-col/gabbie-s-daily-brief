@@ -54,6 +54,16 @@ final class BriefSchedule {
 
     static boolean isActive(Context ctx) { return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean("active", false); }
 
+    static String widgetAppearance(Context ctx) {
+        return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString("widgetAppearance", "system");
+    }
+
+    static void setWidgetAppearance(Context ctx, String appearance) {
+        String value = "light".equals(appearance) || "dark".equals(appearance) ? appearance : "system";
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString("widgetAppearance", value).apply();
+        BriefWidgetProvider.refreshAll(ctx);
+    }
+
     /** Applies the period transition while the app is backgrounded or closed. */
     static void onBoundary(Context ctx) {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);

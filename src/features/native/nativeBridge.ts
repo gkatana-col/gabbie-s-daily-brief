@@ -7,6 +7,8 @@ export const webNativeBridge: NativeBridge = {
   isNativeApp: () => false,
   getPlatform: () => "web",
   getPlatformInfo: async () => ({ ...webPlatformInfo }),
+  getWidgetAppearance: async () => "system",
+  setWidgetAppearance: async () => undefined,
   async openExternalUrl(url) {
     if (typeof window === "undefined") return;
     window.open(url, "_blank", "noopener,noreferrer");
@@ -36,6 +38,8 @@ export const nativeBridge: NativeBridge = {
   isNativeApp: () => activeBridge.isNativeApp(),
   getPlatform: () => activeBridge.getPlatform(),
   getPlatformInfo: () => activeBridge.getPlatformInfo().catch(() => ({ ...webPlatformInfo })),
+  getWidgetAppearance: () => activeBridge.getWidgetAppearance().catch(() => "system" as const),
+  setWidgetAppearance: (appearance) => activeBridge.setWidgetAppearance(appearance).catch(() => undefined),
   openExternalUrl: (url) => activeBridge.openExternalUrl(url).catch(() => undefined),
   requestPermission: (permission) => activeBridge.requestPermission(permission).catch(() => false),
   getDeviceTimezone: () => activeBridge.getDeviceTimezone(),

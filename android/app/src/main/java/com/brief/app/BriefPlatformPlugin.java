@@ -12,6 +12,19 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "BriefPlatform")
 public class BriefPlatformPlugin extends Plugin {
     @PluginMethod
+    public void getWidgetAppearance(PluginCall call) {
+        JSObject result = new JSObject();
+        result.put("appearance", BriefSchedule.widgetAppearance(getContext()));
+        call.resolve(result);
+    }
+
+    @PluginMethod
+    public void setWidgetAppearance(PluginCall call) {
+        BriefSchedule.setWidgetAppearance(getContext(), call.getString("appearance", "system"));
+        call.resolve();
+    }
+
+    @PluginMethod
     public void getInfo(PluginCall call) {
         JSObject result = new JSObject();
         result.put("androidVersion", Build.VERSION.RELEASE);

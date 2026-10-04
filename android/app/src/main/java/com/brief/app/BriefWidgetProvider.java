@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.RemoteViews;
 import java.util.Calendar;
@@ -60,8 +62,21 @@ public class BriefWidgetProvider extends AppWidgetProvider {
         } catch (Exception ignored) {}
     }
 
+    private static boolean isDark(Context ctx, String appearance) {
+        if ("dark".equals(appearance)) return true;
+        if ("light".equals(appearance)) return false;
+        return (ctx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+    }
+
     private static RemoteViews views(Context ctx) {
+        boolean dark = isDark(ctx, BriefSchedule.widgetAppearance(ctx));
         RemoteViews v = new RemoteViews(ctx.getPackageName(), R.layout.brief_widget);
+        v.setInt(R.id.widget_root, "setBackgroundResource", dark ? R.drawable.brief_widget_bg_dark : R.drawable.brief_widget_bg);
+        int primary = Color.parseColor(dark ? "#F4F1F0" : "#282526");
+        int muted = Color.parseColor(dark ? "#B9B1B4" : "#70686A");
+        v.setTextColor(R.id.widget_greeting, primary);
+        v.setTextColor(R.id.widget_event, muted);
+        v.setTextColor(R.id.widget_alarm, muted);
         v.setTextViewText(R.id.widget_greeting, BriefSchedule.greeting(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
         String ev = BriefSchedule.nextEvent(ctx);
         v.setTextViewText(R.id.widget_event, ev != null ? ev : "Няма предстоящи събития");

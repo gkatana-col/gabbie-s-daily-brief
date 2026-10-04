@@ -37,6 +37,8 @@ export interface NativeBridge {
   isNativeApp(): boolean;
   getPlatform(): Platform;
   getPlatformInfo(): Promise<PlatformInfo>;
+  getWidgetAppearance(): Promise<"system" | "light" | "dark">;
+  setWidgetAppearance(appearance: "system" | "light" | "dark"): Promise<void>;
   openExternalUrl(url: string): Promise<void>;
   requestPermission(permission: string): Promise<boolean>;
   getDeviceTimezone(): string;

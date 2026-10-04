@@ -7,6 +7,8 @@ import type { NativeBridge, Platform, PlatformInfo } from "./types";
 /** Mirrors android/app/src/main/java/com/brief/app/BriefPlatformPlugin.java. */
 interface BriefPlatformPlugin {
   getInfo(): Promise<{ androidVersion: string; androidSdk: number; appVersion: string }>;
+  getWidgetAppearance(): Promise<{ appearance: "system" | "light" | "dark" }>;
+  setWidgetAppearance(options: { appearance: "system" | "light" | "dark" }): Promise<void>;
 }
 interface BriefLocationPlugin {
   getCurrentLocation(): Promise<{ latitude: number; longitude: number }>;
@@ -26,6 +28,15 @@ export function createCapacitorBridge(): NativeBridge {
     ...(platform === "android" && Capacitor.isPluginAvailable("BriefLiveNotification") ? createLiveNotificationMethods() : {}),
     isNativeApp: () => true,
     getPlatform: () => platform,
+    getWidgetAppearance: async () => {
+      if (platform !== "android" || !Capacitor.isPluginAvailable("BriefPlatform")) return "system";
+      return (await BriefPlatform.getWidgetAppearance()).appearance;
+    },
+    setWidgetAppearance: async (appearance) => {
+      if (platform === "android" && Capacitor.isPluginAvailable("BriefPlatform")) {
+        await BriefPlatform.setWidgetAppearance({ appearance });
+      }
+    },
     getCurrentLocation: async () => {
       if (platform !== "android" || !Capacitor.isPluginAvailable("BriefLocation")) throw new Error("location_unsupported");
       return BriefLocation.getCurrentLocation();
