@@ -69,7 +69,7 @@ export type BriefIconName =
   | "discover";
 
 const icons: Record<BriefIconName, LucideIcon> = {
-  aiInsight: Sparkles,
+  aiInsight: Info,
   briefUpdates: Bell,
   calendar: CalendarDays,
   complete: Check,

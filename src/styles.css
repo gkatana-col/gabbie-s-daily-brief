@@ -274,6 +274,46 @@
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 
+/* Now Brief composition */
+.brief-now-layout { gap: 0; }
+.brief-now-layout > * { position: relative; }
+.brief-now-layout .brief-hero { padding: .35rem .2rem 1.7rem; }
+.brief-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.brief-kicker { color: var(--muted-foreground); font-size: .72rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+.brief-now-layout .summary-card { margin: 0 -.25rem; min-height: 12rem; border-radius: 2rem; background: color-mix(in oklab, var(--card) 66%, transparent); padding: 1.45rem 1.3rem 1.55rem; box-shadow: 0 18px 50px color-mix(in oklab, var(--foreground) 5%, transparent); backdrop-filter: blur(24px) saturate(125%); }
+.brief-now-layout .summary-card h2 { font-size: 1.45rem; font-weight: 520; letter-spacing: -.035em; }
+.brief-now-layout .summary-card p { max-width: 42rem; font-size: 1rem; line-height: 1.75; }
+.brief-now-layout .eyebrow { background: transparent; padding: 0; color: var(--muted-foreground); font-size: .68rem; letter-spacing: .07em; text-transform: uppercase; }
+.brief-now-layout .brief-inline-meta { margin: 0 -.2rem; border-color: color-mix(in oklab, var(--border) 35%, transparent); padding: .9rem .2rem; }
+.brief-now-sections { display: grid; gap: 0; margin: 1.25rem -.2rem 0; }
+.brief-now-sections > * { padding: 1.4rem .2rem; }
+.brief-now-sections > * + * { border-top: 1px solid color-mix(in oklab, var(--border) 38%, transparent); }
+.brief-now-sections .weather-card { order: -2; margin: 0 -.2rem 1.1rem; border-radius: 1.65rem; background: color-mix(in oklab, var(--accent) 34%, transparent); padding: 1.25rem 1.1rem; }
+.brief-now-sections .weather-card .brief-card { padding: 0; }
+.brief-now-sections .weather-card h2 { font-size: .8rem; font-weight: 600; }
+.brief-now-sections .weather-card .text-5xl { font-size: 3.4rem; font-weight: 450; letter-spacing: -.06em; }
+.brief-now-layout > .brief-card:not(.summary-card) { padding: 1.5rem .2rem; }
+.brief-now-layout > .brief-card:not(.summary-card) + .brief-card { border-top: 1px solid color-mix(in oklab, var(--border) 38%, transparent); }
+.brief-now-layout .brief-card h2 { font-weight: 550; letter-spacing: -.025em; }
+.brief-now-layout .icon-well { width: 1.55rem; height: 1.55rem; background: transparent; color: var(--muted-foreground); }
+.brief-now-layout .priority-row { min-height: 3.35rem; border-radius: 1rem; padding: .55rem .15rem; }
+.brief-now-layout .priority-row:hover { background: color-mix(in oklab, var(--secondary) 35%, transparent); }
+.brief-now-layout .priority-icon { background: transparent; color: var(--muted-foreground); }
+.brief-now-layout .brief-sections .brief-card { padding-left: .2rem; padding-right: .2rem; }
+.brief-now-layout > .brief-card:last-child { padding-bottom: 1rem; }
+.settings-page { padding-bottom: 2rem; }
+.settings-page .brief-card { border-radius: 1.6rem; background: color-mix(in oklab, var(--card) 58%, transparent); padding: 1.2rem 1.05rem; backdrop-filter: blur(20px) saturate(120%); }
+.settings-page .brief-card + .brief-card { margin-top: 1rem; }
+.settings-page .brief-card h2 { font-weight: 550; letter-spacing: -.02em; }
+.settings-page .brief-card .icon-well { background: transparent; color: var(--muted-foreground); }
+.settings-page .divide-y > * + * { border-color: color-mix(in oklab, var(--border) 42%, transparent); }
+@media (min-width: 700px) {
+  .brief-now-sections { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); column-gap: 2.2rem; }
+  .brief-now-sections .weather-card { grid-column: 1 / -1; }
+  .brief-now-sections > * + * { border-top: 0; }
+  .brief-now-sections > *:nth-child(3), .brief-now-sections > *:nth-child(4) { border-top: 1px solid color-mix(in oklab, var(--border) 38%, transparent); }
+}
+
 /* Discover */
 @utility discover-tabs { display: flex; gap: .4rem; margin: 0 -1rem; overflow-x: auto; padding: .15rem 1rem .35rem; scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
 @utility discover-tab { flex-shrink: 0; border: 1px solid color-mix(in oklab, var(--border) 80%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--card) 70%, transparent); padding: .45rem .8rem; color: var(--muted-foreground); font-size: .78rem; font-weight: 500; transition: background .18s ease, color .18s ease; }
