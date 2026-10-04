@@ -98,6 +98,9 @@ jobs:
           set -euo pipefail
           npm ci
           npm run build
+          rm -rf dist/client
+          mkdir -p dist/client
+          cp -R .output/public/. dist/client/
           npx cap sync android
 
       - name: Build debug APK
