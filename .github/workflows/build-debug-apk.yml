@@ -124,6 +124,26 @@ jobs:
           sdkmanager --version
           sdkmanager --list_installed
 
+      - name: Diagnose checked out web build
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Expected branch: v0/brief-atmosphere-navigation"
+          echo "Actual commit:"
+          git rev-parse HEAD
+          echo "Commit message:"
+          git log -1 --oneline
+          echo "Git status:"
+          git status --short
+          echo "Working directory:"
+          pwd
+          echo "Directory listing:"
+          ls -la
+          echo "vite.config.ts:"
+          git show HEAD:vite.config.ts | grep -A8 -B3 "tanstackStart"
+          echo "Build script:"
+          node -e "console.log(require('./package.json').scripts.build)"
+
       - name: Install web dependencies
         run: npm ci
 
