@@ -1,0 +1,1 @@
+import{c as e,u as t}from"./check-BRnC6Sp4.js";var n=t(e(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

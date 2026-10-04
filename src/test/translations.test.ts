@@ -7,5 +7,9 @@ describe("Brief translations", () => {
     expect(getTranslation("en", "settings")).toBe("Settings");
     expect(getTranslation("bg", "brand")).toBe("Brief");
     expect(getTranslation("en", "brand")).toBe("Brief");
+    expect(getTranslation("bg", "pullToRefresh")).toBe("Издърпай за обновяване");
+    expect(getTranslation("en", "pullToRefresh")).toBe("Pull to refresh");
+    expect(getTranslation("bg", "refreshing")).toBe("Обновяване…");
+    expect(getTranslation("en", "refreshing")).toBe("Refreshing…");
   });
 });

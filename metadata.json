@@ -1,0 +1,6 @@
+{
+  "name": "Brief — Gabbie's Daily Brief",
+  "description": "A calm, intelligent daily brief with priorities, calendar, weather, and curated news.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -155,13 +155,13 @@ jobs:
         run: |
           set -euo pipefail
           echo "Build output:"
-          find dist -maxdepth 3 -type f | sort | head -100
+          find .output/public -maxdepth 3 -type f | sort | head -100
 
           echo "Capacitor webDir:"
           node --input-type=module -e "import fs from 'node:fs'; const config = fs.readFileSync('./capacitor.config.ts', 'utf8'); const match = config.match(/webDir:\s*['\\\"]([^'\\\"]+)['\\\"]/); if (!match) throw new Error('Unable to determine webDir from capacitor.config.ts'); console.log(match[1]);"
 
-          test -f dist/client/index.html || {
-            echo "ERROR: npm run build did not produce dist/client/index.html." >&2
+          test -f .output/public/index.html || {
+            echo "ERROR: npm run build did not produce .output/public/index.html." >&2
             exit 1
           }
 

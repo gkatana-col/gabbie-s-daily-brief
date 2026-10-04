@@ -18,6 +18,7 @@ export const translations = {
     morningPill: "Добро утро • Твоят ден", eveningPill: "Вечерен обзор", showMorning: "Сутрешен Brief", showEvening: "Вечерен Brief", noWeather: "Няма данни за времето", tomorrow: "Утре",
     widgetPreviewTitle: "Home Screen Widget Preview", widgetPreviewSubtitle: "Визуален PWA преглед на Brief за начален екран.", widgetPreviewModes: "Режим на прегледа", widgetMorning: "Сутрин", widgetEvening: "Вечер", widgetCompact: "Компактен", widgetOpenBrief: "Отвори Brief", widgetPreviewDay: "Събота", widgetPreviewDate: "3 октомври",
     calendarPermissionTitle: "Няма достъп до календара", calendarPermissionHint: "Разреши достъп, за да видиш реалните си събития тук.", calendarAllowAccess: "Разреши достъп",
+    pullToRefresh: "Издърпай за обновяване", releaseToRefresh: "Пусни за обновяване", refreshing: "Обновяване…",
     ...discoverTranslations.bg,
   },
   en: {
@@ -36,6 +37,7 @@ export const translations = {
     morningPill: "Good morning • Your day", eveningPill: "Evening recap", showMorning: "Morning Brief", showEvening: "Evening Brief", noWeather: "Weather unavailable", tomorrow: "Tomorrow",
     widgetPreviewTitle: "Home Screen Widget Preview", widgetPreviewSubtitle: "A visual PWA preview of Brief for your home screen.", widgetPreviewModes: "Preview mode", widgetMorning: "Morning", widgetEvening: "Evening", widgetCompact: "Compact", widgetOpenBrief: "Open Brief", widgetPreviewDay: "Saturday", widgetPreviewDate: "3 October",
     calendarPermissionTitle: "Calendar access is off", calendarPermissionHint: "Allow access to see your real upcoming events here.", calendarAllowAccess: "Allow access",
+    pullToRefresh: "Pull to refresh", releaseToRefresh: "Release to refresh", refreshing: "Refreshing…",
     ...discoverTranslations.en,
   },
 } as const;
