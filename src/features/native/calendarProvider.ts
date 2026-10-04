@@ -73,7 +73,20 @@ export function createCapacitorCalendarProvider(plugin: BriefCalendarPlugin = re
 }
 
 let activeProvider: NativeCalendarProvider = mockNativeCalendarProvider;
+const providerListeners = new Set<() => void>();
+
 /** Browser keeps the mock provider; the Capacitor bridge installs the native one on Android. */
 export const getNativeCalendarProvider = () => activeProvider;
-export function setNativeCalendarProvider(provider: NativeCalendarProvider) { activeProvider = provider; }
-export function resetNativeCalendarProvider() { activeProvider = mockNativeCalendarProvider; permissionState = "unsupported"; }
+export const subscribeNativeCalendarProvider = (listener: () => void) => {
+  providerListeners.add(listener);
+  return () => providerListeners.delete(listener);
+};
+export function setNativeCalendarProvider(provider: NativeCalendarProvider) {
+  activeProvider = provider;
+  providerListeners.forEach((listener) => listener());
+}
+export function resetNativeCalendarProvider() {
+  activeProvider = mockNativeCalendarProvider;
+  permissionState = "unsupported";
+  providerListeners.forEach((listener) => listener());
+}
