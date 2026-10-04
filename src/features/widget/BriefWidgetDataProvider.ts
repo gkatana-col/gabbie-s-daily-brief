@@ -59,7 +59,7 @@ export const briefingWidgetDataProvider: BriefWidgetDataProvider = {
       summary: isBg ? `${importantCount} важни неща днес` : `${importantCount} important things today`,
       primaryItem: university && eventTime ? { icon: "calendar", text: `${eventTime} · ${university.title}` } : null,
       secondaryItem: briefing.weather.available
-        ? { icon: "weather", text: `${briefing.weather.temperature}°C · ${briefing.weather.condition}` }
+        ? { icon: "weather", text: `${briefing.weather.temperature}°${briefing.weather.unit ?? "C"} · ${briefing.weather.condition}` }
         : null,
       icon: "morning",
       timestamp,

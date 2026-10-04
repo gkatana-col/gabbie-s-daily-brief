@@ -48,6 +48,7 @@ export interface WeatherData {
   low: number;
   location: string;
   precipitationChance?: number;
+  unit?: "C" | "F";
 }
 
 export interface NewsArticle {
@@ -104,6 +105,7 @@ export interface BriefingWeather {
   high?: number;
   low?: number;
   location?: string;
+  unit?: "C" | "F";
 }
 
 export interface Briefing {

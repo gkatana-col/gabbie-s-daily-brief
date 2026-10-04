@@ -4,7 +4,7 @@ import type { ResolvedLanguage } from "@/features/briefing/types";
 export const translations = {
   bg: {
     brand: "Brief", home: "Начало", today: "Днес", news: "Новини", calendar: "Календар", settings: "Настройки",
-    dailySummary: "Твоят дневен обзор", importantToday: "Важно днес", schedule: "График", weather: "Времето", selectedNews: "Подбрани новини",
+    dailySummary: "Твоят дневен обзор", importantToday: "Важно днес", schedule: "График", weather: "Времето", weatherLoading: "Зареждане на времето…", weatherPermissionDenied: "Няма достъп до местоположението. Разреши го, за да видиш времето.", weatherRetry: "Опитай отново", selectedNews: "Подбрани новини",
     personalInsight: "Личен фокус", eveningBrief: "Вечерен Brief", morningBrief: "Сутрешен Brief", generatedNow: "Обновено сега",
     allPriorities: "Всички приоритети", allEvents: "Целият календар", allNews: "Всички новини", minAgo: "мин",
     todayTitle: "Твоят ден", todaySubtitle: "Всичко важно в един спокоен ритъм.", scheduleOverview: "Преглед на деня",
@@ -22,7 +22,7 @@ export const translations = {
   },
   en: {
     brand: "Brief", home: "Home", today: "Today", news: "News", calendar: "Calendar", settings: "Settings",
-    dailySummary: "Your daily overview", importantToday: "Important today", schedule: "Schedule", weather: "Weather", selectedNews: "Selected news",
+    dailySummary: "Your daily overview", importantToday: "Important today", schedule: "Schedule", weather: "Weather", weatherLoading: "Loading weather…", weatherPermissionDenied: "Location access is off. Allow it to see the weather.", weatherRetry: "Try again", selectedNews: "Selected news",
     personalInsight: "Personal focus", eveningBrief: "Evening Brief", morningBrief: "Morning Brief", generatedNow: "Updated now",
     allPriorities: "All priorities", allEvents: "Full calendar", allNews: "All news", minAgo: "min",
     todayTitle: "Your day", todaySubtitle: "Everything important, at a calmer pace.", scheduleOverview: "Day overview",

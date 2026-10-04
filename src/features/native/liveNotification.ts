@@ -1,5 +1,6 @@
 import { registerPlugin } from "@capacitor/core";
 import { getTimeOfDayGreeting } from "@/features/briefing/briefingEngine";
+import { conditionFor, getWeatherState } from "@/features/weather/weatherService";
 import type { LiveNotificationContent, LiveNotificationStatus, NativeBridge, NotificationPermissionState } from "./types";
 
 /** Mirrors android/.../BriefLiveNotificationPlugin.java. */
@@ -21,7 +22,10 @@ export const LIVE_NOTIFICATION_TEST = {
  * Period is omitted so the native side resolves the accent from local time too.
  */
 export function buildInitialTestContent(now: Date = new Date()): LiveNotificationContent {
-  return { title: `Brief · ${getTimeOfDayGreeting(now.getHours(), "bg")}`, text: "Твоят ден започва", progress: 25 };
+  // Appends live weather only when a fresh real reading exists; otherwise the text is unchanged.
+  const { status, reading } = getWeatherState();
+  const weather = status === "ok" && reading ? ` · ${reading.temperature}°${reading.unit === "F" ? "F" : ""} ${conditionFor(reading.code, "bg")}` : "";
+  return { title: `Brief · ${getTimeOfDayGreeting(now.getHours(), "bg")}`, text: `Твоят ден започва${weather}`, progress: 25 };
 }
 
 const STATUSES: LiveNotificationStatus[] = ["shown", "updated", "stopped", "unsupported", "permission_denied", "error"];

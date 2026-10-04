@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from "react";
+import { getWeatherState, refreshWeather, subscribeWeather } from "@/features/weather/weatherService";
 import type { Briefing } from "@/features/briefing/types";
 import { useApp } from "@/features/i18n/I18nProvider";
 import { useNativeCalendarEvents } from "@/features/native/useNativeCalendar";
@@ -42,9 +44,13 @@ export function CalendarCard({ briefing, expanded = false }: { briefing: Briefin
 }
 
 export function WeatherCard({ briefing }: { briefing: Briefing }) {
-  const { t } = useApp();
-  if (!briefing.weather.available) return <CardShell className="weather-card"><CardHeading icon="weather" title={t("weather")} /><p className="flex items-center gap-2 text-sm text-muted-foreground"><BriefIcon name="weather" />{briefing.weather.summary}</p></CardShell>;
-  return <CardShell className="weather-card"><CardHeading icon="weather" title={t("weather")} action={briefing.weather.location} /><div className="flex items-end justify-between gap-4"><div><p className="flex items-center gap-3 font-display text-5xl font-medium"><BriefIcon className="text-primary" name="weather" size={27} strokeWidth={1.6} />{briefing.weather.temperature}°</p><p className="mt-2 text-sm text-muted-foreground">{briefing.weather.condition}</p></div><div className="text-right text-xs leading-6 text-muted-foreground"><p>{t("high")} {briefing.weather.high}°</p><p>{t("low")} {briefing.weather.low}°</p></div></div></CardShell>;
+  const { t, briefingLanguage: language } = useApp();
+  const { status } = useSyncExternalStore(subscribeWeather, getWeatherState, getWeatherState);
+  if (!briefing.weather.available) {
+    const message = status === "loading" || status === "idle" ? t("weatherLoading") : status === "permission_denied" ? t("weatherPermissionDenied") : briefing.weather.summary;
+    return <CardShell className="weather-card"><CardHeading icon="weather" title={t("weather")} /><p className="flex items-center gap-2 text-sm text-muted-foreground"><BriefIcon name="weather" />{message}</p>{status === "permission_denied" || status === "unavailable" ? <button type="button" className="mt-3 text-sm font-medium text-primary" onClick={() => void refreshWeather(language, true)}>{t("weatherRetry")}</button> : null}</CardShell>;
+  }
+  return <CardShell className="weather-card"><CardHeading icon="weather" title={t("weather")} action={briefing.weather.location} /><div className="flex items-end justify-between gap-4"><div><p className="flex items-center gap-3 font-display text-5xl font-medium"><BriefIcon className="text-primary" name="weather" size={27} strokeWidth={1.6} />{briefing.weather.temperature}°{briefing.weather.unit === "F" ? "F" : ""}</p><p className="mt-2 text-sm text-muted-foreground">{briefing.weather.condition}</p></div><div className="text-right text-xs leading-6 text-muted-foreground"><p>{t("high")} {briefing.weather.high}°</p><p>{t("low")} {briefing.weather.low}°</p></div></div></CardShell>;
 }
 
 export function NewsCard({ briefing, expanded = false }: { briefing: Briefing; expanded?: boolean }) {
