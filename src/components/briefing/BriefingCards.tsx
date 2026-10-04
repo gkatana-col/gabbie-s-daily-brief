@@ -23,7 +23,7 @@ export function GreetingCard({ briefing, onPillClick }: { briefing: Briefing; on
 
 export function DailySummaryCard({ briefing }: { briefing: Briefing }) {
   const { t } = useApp();
-  return <CardShell className="summary-card"><div className="mb-5 flex items-center justify-between"><span className="brief-kicker">{briefing.type === "morning" ? t("morningBrief") : t("eveningBrief")}</span><span className="text-xs text-muted-foreground">{t("generatedNow")}</span></div><h2 className="mb-3 font-display text-xl font-semibold">{t("dailySummary")}</h2><p className="text-[15px] leading-7 text-card-foreground/80">{briefing.summary}</p></CardShell>;
+  return <CardShell className="summary-card"><div className="mb-5 flex items-center justify-between"><span className="brief-kicker">{briefing.type === "morning" ? t("morningBrief") : t("eveningBrief")}</span><span className="text-xs text-muted-foreground">{t("generatedNow")}</span></div><h2 className="mb-3 font-display text-xl font-semibold">{t("dailySummary")}</h2><p className="text-[15px] leading-7 text-muted-foreground">{briefing.summary}</p></CardShell>;
 }
 
 export function PriorityCard({ briefing }: { briefing: Briefing }) {
@@ -61,10 +61,10 @@ export function NewsCard({ briefing, expanded = false }: { briefing: Briefing; e
 
 export function InsightCard({ briefing }: { briefing: Briefing }) {
   const { t } = useApp();
-  return <CardShell className="insight-card"><CardHeading icon="aiInsight" title={t("personalInsight")} /><p className="text-[15px] leading-7 text-card-foreground/80">{briefing.insight}</p><div className="mt-5 flex items-center gap-2 text-xs font-semibold text-primary"><BriefIcon name="time" size={13} />{t("focusTime")}</div></CardShell>;
+  return <CardShell className="insight-card"><CardHeading icon="aiInsight" title={t("personalInsight")} /><p className="text-[15px] leading-7 text-muted-foreground">{briefing.insight}</p><div className="mt-5 flex items-center gap-2 text-xs font-semibold text-primary"><BriefIcon name="time" size={13} />{t("focusTime")}</div></CardShell>;
 }
 
 export function EveningRecapCard({ briefing }: { briefing: Briefing }) {
   const { t } = useApp();
-  return <CardShell className="evening-card"><CardHeading icon="evening" title={t("eveningBrief")} /><p className="text-[15px] leading-7 text-card-foreground/80">{briefing.tomorrowPreview}</p></CardShell>;
+  return <CardShell className="evening-card"><CardHeading icon="evening" title={t("eveningBrief")} /><p className="text-[15px] leading-7 text-muted-foreground">{briefing.tomorrowPreview}</p></CardShell>;
 }

@@ -75,7 +75,15 @@ function getAtmosphericTextColors(sky: { top: string; middle: string; horizon: s
   const brightness = (luminance(sky.top) + luminance(sky.middle) + luminance(sky.horizon)) / 3;
   const lightTextAmount = clamp((0.56 - brightness) / 0.28, 0, 1);
   const mix = (dark: SkyColor, light: SkyColor) => rgb(interpolateColor(dark, light, lightTextAmount));
-  return { foreground: mix([20, 27, 39], [248, 250, 252]), muted: mix([67, 78, 94], [205, 216, 230]) };
+  const foregroundAmount = lightTextAmount;
+  const adaptive = (dark: SkyColor, light: SkyColor) => rgb(interpolateColor(dark, light, foregroundAmount));
+  return {
+    foreground: adaptive([20, 27, 39], [248, 250, 252]),
+    muted: adaptive([67, 78, 94], [205, 216, 230]),
+    primary: adaptive([15, 74, 116], [222, 241, 255]),
+    border: adaptive([18, 41, 68], [255, 255, 255]),
+    textShadow: lightTextAmount > 0.52 ? "rgba(5, 18, 38, .42)" : "rgba(255, 255, 255, .42)",
+  };
 }
 
 function getSkyColors(date: Date) {
@@ -111,6 +119,6 @@ export function AtmosphereShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <div className={`app-atmosphere atmosphere-${period}`} style={{ "--sky-top": sky.top, "--sky-middle": sky.middle, "--sky-horizon": sky.horizon, "--foreground": textColors.foreground, "--muted-foreground": textColors.muted } as CSSProperties}><PullToRefresh>{children}</PullToRefresh></div>;
+  return <div className={`app-atmosphere atmosphere-${period}`} style={{ "--sky-top": sky.top, "--sky-middle": sky.middle, "--sky-horizon": sky.horizon, "--foreground": textColors.foreground, "--muted-foreground": textColors.muted, "--primary": textColors.primary, "--adaptive-border": textColors.border, "--text-shadow": textColors.textShadow } as CSSProperties}><PullToRefresh>{children}</PullToRefresh></div>;
 }
 
