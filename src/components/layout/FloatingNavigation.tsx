@@ -64,6 +64,19 @@ const skyStops: ReadonlyArray<[number, SkyColor, SkyColor, SkyColor]> = [
 
 const interpolateColor = (from: SkyColor, to: SkyColor, amount: number) => from.map((value, index) => Math.round(value + ((to[index] ?? value) - value) * amount)) as SkyColor;
 const rgb = (color: SkyColor) => `rgb(${color.join(",")})`;
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+function getAtmosphericTextColors(sky: { top: string; middle: string; horizon: string }) {
+  const toRgb = (value: string) => value.match(/\d+/g)?.slice(0, 3).map(Number) ?? [0, 0, 0];
+  const luminance = (value: string) => {
+    const [red, green, blue] = toRgb(value);
+    return (0.2126 * red + 0.7152 * green + 0.0722 * blue) / 255;
+  };
+  const brightness = (luminance(sky.top) + luminance(sky.middle) + luminance(sky.horizon)) / 3;
+  const lightTextAmount = clamp((0.56 - brightness) / 0.28, 0, 1);
+  const mix = (dark: SkyColor, light: SkyColor) => rgb(interpolateColor(dark, light, lightTextAmount));
+  return { foreground: mix([20, 27, 39], [248, 250, 252]), muted: mix([67, 78, 94], [205, 216, 230]) };
+}
 
 function getSkyColors(date: Date) {
   const minutes = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
@@ -86,6 +99,7 @@ export function AtmosphereShell({ children }: { children: React.ReactNode }) {
   const [now, setNow] = useState(() => new Date());
   const period = getAtmosphere(now.getHours());
   const sky = useMemo(() => getSkyColors(now), [now]);
+  const textColors = useMemo(() => getAtmosphericTextColors(sky), [sky]);
 
   useEffect(() => {
     const updateTime = () => setNow(new Date());
@@ -97,6 +111,6 @@ export function AtmosphereShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <div className={`app-atmosphere atmosphere-${period}`} style={{ "--sky-top": sky.top, "--sky-middle": sky.middle, "--sky-horizon": sky.horizon } as CSSProperties}><PullToRefresh>{children}</PullToRefresh></div>;
+  return <div className={`app-atmosphere atmosphere-${period}`} style={{ "--sky-top": sky.top, "--sky-middle": sky.middle, "--sky-horizon": sky.horizon, "--foreground": textColors.foreground, "--muted-foreground": textColors.muted } as CSSProperties}><PullToRefresh>{children}</PullToRefresh></div>;
 }
 
