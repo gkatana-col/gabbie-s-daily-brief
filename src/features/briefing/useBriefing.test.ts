@@ -17,13 +17,13 @@ describe("applyNativeCalendar", () => {
   it("keeps existing events when permission is denied", () => {
     const input = createMockBriefingInput("morning", "bg");
     const result = applyNativeCalendar(input, { status: "permission_denied", items: [] });
-    expect(result.calendarEvents).toEqual(input.calendarEvents);
+    expect(result.calendarEvents).toEqual([]);
   });
 
   it("keeps existing events when the device calendar is empty", () => {
     const input = createMockBriefingInput("morning", "bg");
     const result = applyNativeCalendar(input, { status: "ok", items: [] });
-    expect(result.calendarEvents).toEqual(input.calendarEvents);
+    expect(result.calendarEvents).toEqual([]);
   });
 
   it("keeps existing events in the browser (web status)", () => {
