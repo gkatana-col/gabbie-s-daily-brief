@@ -8,7 +8,11 @@ import type { NativeBridge, Platform, PlatformInfo } from "./types";
 interface BriefPlatformPlugin {
   getInfo(): Promise<{ androidVersion: string; androidSdk: number; appVersion: string }>;
 }
+interface BriefLocationPlugin {
+  getCurrentLocation(): Promise<{ latitude: number; longitude: number }>;
+}
 const BriefPlatform = registerPlugin<BriefPlatformPlugin>("BriefPlatform");
+const BriefLocation = registerPlugin<BriefLocationPlugin>("BriefLocation");
 
 /** Capacitor-backed bridge. Only capabilities that really exist natively are forwarded; the rest keep the safe web behaviour. */
 export function createCapacitorBridge(): NativeBridge {
@@ -18,6 +22,10 @@ export function createCapacitorBridge(): NativeBridge {
     ...(platform === "android" && Capacitor.isPluginAvailable("BriefLiveNotification") ? createLiveNotificationMethods() : {}),
     isNativeApp: () => true,
     getPlatform: () => platform,
+    getCurrentLocation: async () => {
+      if (platform !== "android" || !Capacitor.isPluginAvailable("BriefLocation")) throw new Error("location_unsupported");
+      return BriefLocation.getCurrentLocation();
+    },
     async getPlatformInfo(): Promise<PlatformInfo> {
       const base: PlatformInfo = { ...webPlatformInfo, platform, native: true, capacitor: true };
       if (platform !== "android" || !Capacitor.isPluginAvailable("BriefPlatform")) return base;

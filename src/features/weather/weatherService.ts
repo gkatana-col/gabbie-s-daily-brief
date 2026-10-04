@@ -1,4 +1,5 @@
 import type { ResolvedLanguage, WeatherData } from "@/features/briefing/types";
+import { nativeBridge } from "@/features/native/nativeBridge";
 
 /** Live weather: device location (standard browser/Android permission flow) → Open-Meteo (free, no key). No mock fallback. */
 export type WeatherStatus = "idle" | "loading" | "ok" | "permission_denied" | "unavailable";
@@ -35,10 +36,17 @@ export function toWeatherData(reading: WeatherReading, language: ResolvedLanguag
   return { temperature: reading.temperature, feelsLike: reading.feelsLike, high: reading.high, low: reading.low, condition: conditionFor(reading.code, language), location: reading.location, unit: reading.unit, ...(reading.precipitationChance !== undefined ? { precipitationChance: reading.precipitationChance } : {}) };
 }
 
-const getPosition = () => new Promise<GeolocationPosition>((resolve, reject) => {
-  if (typeof navigator === "undefined" || !navigator.geolocation) return reject({ code: 2 });
-  navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: false, timeout: 15_000, maximumAge: 5 * 60_000 });
-});
+const getPosition = async (): Promise<{ latitude: number; longitude: number }> => {
+  if (nativeBridge.isNativeApp()) return nativeBridge.getCurrentLocation();
+  return new Promise((resolve, reject) => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) return reject({ code: 2 });
+    navigator.geolocation.getCurrentPosition(
+      (position) => resolve({ latitude: position.coords.latitude, longitude: position.coords.longitude }),
+      reject,
+      { enableHighAccuracy: false, timeout: 15_000, maximumAge: 5 * 60_000 },
+    );
+  });
+};
 
 async function fetchReading(lat: number, lon: number, unit: "C" | "F", language: ResolvedLanguage): Promise<WeatherReading> {
   const params = new URLSearchParams({
@@ -72,8 +80,8 @@ export function refreshWeather(language: ResolvedLanguage, force = false): Promi
   inflight = (async () => {
     try {
       const pos = await getPosition();
-      const unit = unitForLocale(typeof navigator !== "undefined" ? navigator.language : "bg-BG");
-      set({ status: "ok", reading: await fetchReading(pos.coords.latitude, pos.coords.longitude, unit, language) });
+      const unit = unitForLocale(nativeBridge.getDeviceLocale());
+      set({ status: "ok", reading: await fetchReading(pos.latitude, pos.longitude, unit, language) });
     } catch (e) {
       set({ status: (e as { code?: number })?.code === 1 ? "permission_denied" : "unavailable", reading: null });
     } finally { inflight = null; }

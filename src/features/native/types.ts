@@ -49,6 +49,8 @@ export interface NativeBridge {
   startLiveNotification(content: LiveNotificationContent): Promise<LiveNotificationStatus>;
   updateLiveNotification(content: LiveNotificationContent): Promise<LiveNotificationStatus>;
   stopLiveNotification(): Promise<LiveNotificationStatus>;
+  /** Gets a fresh device location, requesting location permission only when weather needs it. */
+  getCurrentLocation(): Promise<{ latitude: number; longitude: number }>;
 }
 
 export interface NowBarAdapter {
