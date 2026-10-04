@@ -65,10 +65,10 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.97 0.012 85);
+  --radius: 1rem;
+  --background: oklch(0.965 0.012 82);
   --foreground: oklch(0.25 0.022 165);
-  --card: oklch(0.995 0.006 85);
+  --card: oklch(0.985 0.008 84);
   --card-foreground: oklch(0.25 0.022 165);
   --popover: oklch(0.995 0.006 85);
   --popover-foreground: oklch(0.25 0.022 165);
@@ -103,9 +103,9 @@
 }
 
 .dark {
-  --background: oklch(0.2 0.018 165);
+  --background: oklch(0.17 0.018 165);
   --foreground: oklch(0.94 0.012 85);
-  --card: oklch(0.25 0.02 165);
+  --card: oklch(0.225 0.02 165);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
@@ -154,8 +154,8 @@
 }
 
 @utility font-display { font-family: var(--font-display); }
-@utility brief-card { border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--card); color: var(--card-foreground); padding: 1.25rem; box-shadow: var(--shadow-card); }
-@utility summary-card { background: color-mix(in oklab, var(--accent) 55%, var(--card)); border-color: color-mix(in oklab, var(--primary) 18%, transparent); }
+@utility brief-card { border: 1px solid color-mix(in oklab, var(--border) 72%, transparent); border-radius: 1.5rem; background: var(--card); color: var(--card-foreground); padding: 1.35rem; box-shadow: var(--shadow-card); }
+@utility summary-card { background: color-mix(in oklab, var(--accent) 42%, var(--card)); border-color: color-mix(in oklab, var(--primary) 18%, transparent); }
 @utility insight-card { background: color-mix(in oklab, var(--card) 84%, var(--accent)); }
 @utility evening-card { background: color-mix(in oklab, var(--card) 90%, var(--secondary)); }
 @utility weather-card { background: color-mix(in oklab, var(--card) 88%, oklch(0.83 0.035 220)); }
@@ -166,7 +166,7 @@
 @utility priority-row { display: flex; min-height: 3.75rem; align-items: center; gap: .8rem; border-radius: .7rem; padding: .6rem; }
 @utility priority-number { display: grid; width: 1.75rem; height: 1.75rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: var(--secondary); color: var(--primary); font-size: .75rem; font-weight: 700; }
 @utility priority-icon { display: grid; width: 1.75rem; height: 1.75rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: color-mix(in oklab, var(--secondary) 72%, transparent); color: var(--primary); }
-@utility bottom-nav { position: fixed; right: 0; bottom: 0; left: 0; z-index: 40; border-top: 1px solid color-mix(in oklab, var(--border) 75%, transparent); background: color-mix(in oklab, var(--background) 86%, transparent); padding: .4rem .35rem max(.45rem, env(safe-area-inset-bottom)); backdrop-filter: blur(22px); }
+@utility bottom-nav { position: fixed; right: 0; bottom: 0; left: 0; z-index: 40; border-top: 1px solid color-mix(in oklab, var(--border) 58%, transparent); background: color-mix(in oklab, var(--background) 92%, transparent); padding: .5rem .45rem max(.55rem, env(safe-area-inset-bottom)); backdrop-filter: blur(24px) saturate(120%); }
 @utility nav-item { display: flex; min-width: 0; min-height: 3.5rem; flex-direction: column; align-items: center; justify-content: center; gap: .25rem; border-radius: .7rem; color: var(--muted-foreground); font-size: .66rem; font-weight: 500; transition: color .18s ease, background .18s ease; }
 @utility nav-item-active { background: color-mix(in oklab, var(--primary) 9%, transparent); color: var(--primary); }
 

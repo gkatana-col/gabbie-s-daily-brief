@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="18dp"
     android:background="@drawable/brief_widget_bg"
     android:contentDescription="@string/widget_description">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
         <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_brief_logo" android:contentDescription="Brief" />
-        <TextView android:id="@+id/widget_greeting" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Brief" android:textColor="#22302C" android:textSize="18sp" android:textStyle="bold" />
+        <TextView android:id="@+id/widget_greeting" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Brief" android:textColor="@color/colorOnSurface" android:textSize="18sp" android:textStyle="bold" />
     </LinearLayout>
-    <TextView android:id="@+id/widget_event" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:maxLines="2" android:ellipsize="end" android:textColor="#4A5A63" android:textSize="14sp" />
-    <TextView android:id="@+id/widget_alarm" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:visibility="gone" android:textColor="#4A5A63" android:textSize="13sp" />
+    <TextView android:id="@+id/widget_event" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:maxLines="2" android:ellipsize="end" android:textColor="@color/colorOnSurfaceMuted" android:textSize="14sp" />
+    <TextView android:id="@+id/widget_alarm" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:visibility="gone" android:textColor="@color/colorOnSurfaceMuted" android:textSize="13sp" />
 </LinearLayout>
