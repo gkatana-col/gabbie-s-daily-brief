@@ -155,11 +155,12 @@
 
 @utility font-display { font-family: var(--font-display); }
 @utility brief-card { border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--card); color: var(--card-foreground); padding: 1.25rem; box-shadow: var(--shadow-card); }
-@utility summary-card { background: color-mix(in oklab, var(--accent) 55%, var(--card)); border-color: color-mix(in oklab, var(--primary) 18%, transparent); }
-@utility insight-card { background: color-mix(in oklab, var(--card) 84%, var(--accent)); }
-@utility evening-card { background: color-mix(in oklab, var(--card) 90%, var(--secondary)); }
-@utility weather-card { background: color-mix(in oklab, var(--card) 88%, oklch(0.83 0.035 220)); }
-@utility icon-well { display: grid; width: 1.875rem; height: 1.875rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: color-mix(in oklab, var(--secondary) 72%, transparent); color: var(--primary); }
+@utility brief-section { position: relative; border-top: 1px solid color-mix(in oklab, var(--border) 58%, transparent); padding: 1.5rem 0; }
+@utility summary-card { border-top: 0; padding-top: .65rem; }
+@utility insight-card { background: transparent; }
+@utility evening-card { background: transparent; }
+@utility weather-card { background: transparent; }
+@utility icon-well { display: grid; width: 1.55rem; height: 1.55rem; flex-shrink: 0; place-items: center; color: var(--primary); }
 @utility eyebrow { display: inline-flex; align-items: center; gap: .4rem; border-radius: 999px; background: color-mix(in oklab, var(--primary) 10%, transparent); padding: .35rem .65rem; color: var(--primary); font-size: .7rem; font-weight: 600; }
 @utility dynamic-pill { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid color-mix(in oklab, var(--primary) 18%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--card) 78%, transparent); padding: .45rem .7rem; color: var(--primary); font-size: .7rem; font-weight: 600; backdrop-filter: blur(14px); }
 @utility brand-mark { display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: .65rem; background: var(--primary); color: var(--primary-foreground); }
@@ -177,7 +178,30 @@
 .atmosphere-midday { background: radial-gradient(circle at 82% 0%, oklch(.82 .16 205 / .38), transparent 44%), radial-gradient(circle at 0% 52%, oklch(.82 .13 230 / .2), transparent 34%), var(--background); }
 .atmosphere-evening { background: radial-gradient(circle at 85% 0%, oklch(.72 .18 45 / .42), transparent 45%), radial-gradient(circle at 10% 35%, oklch(.65 .16 320 / .22), transparent 40%), var(--background); }
 .atmosphere-night { background: radial-gradient(circle at 75% 0%, oklch(.38 .12 275 / .45), transparent 45%), radial-gradient(circle at 10% 60%, oklch(.3 .1 205 / .35), transparent 38%), var(--background); }
+.brief-page { display: grid; gap: 0; }
+.brief-page > section:first-child { padding-bottom: 2.5rem; }
+.brief-grid { display: grid; gap: 0; }
+.brief-grid > .brief-section { min-width: 0; }
+.brief-grid > .brief-section:nth-child(2) { border-top-color: color-mix(in oklab, var(--primary) 24%, var(--border)); }
+.brief-grid > .brief-section:nth-child(3), .brief-grid > .brief-section:nth-child(4) { border-top-style: dashed; }
+.brief-demo-controls { display: flex; justify-content: flex-end; gap: .25rem; margin: -1.25rem 0 1rem; opacity: .72; }
+.brief-page .summary-card h2 { max-width: 34rem; font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.15; }
+.brief-page .summary-card > p { max-width: 42rem; font-size: 1rem; line-height: 1.8; }
+.brief-page .brief-section > .mb-5 { margin-bottom: 1.25rem; }
+.brief-page .brief-section h2 { letter-spacing: -.02em; }
+.brief-page .brief-section article { padding-top: 1.2rem; padding-bottom: 1.2rem; }
+.brief-page .brief-section article:first-child { padding-top: 0; }
+.brief-page .priority-row { min-height: 3.25rem; padding-left: 0; padding-right: 0; }
 .editorial-section { border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent); padding-top: 1.4rem; }
+@media (min-width: 700px) {
+  .brief-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3rem; }
+  .brief-grid > .brief-section:nth-child(2) { border-top-color: color-mix(in oklab, var(--border) 58%, transparent); }
+  .brief-grid > .brief-section:nth-child(2n) { padding-left: 3rem; border-left: 1px solid color-mix(in oklab, var(--border) 42%, transparent); }
+}
+@media (max-width: 699px) {
+  .brief-page > section:first-child { padding-bottom: 2rem; }
+  .brief-demo-controls { margin-top: -1rem; }
+}
 .pull-indicator { position: fixed; top: .75rem; left: 50%; z-index: 50; display: flex; align-items: center; gap: .35rem; border: 1px solid color-mix(in oklab, var(--border) 70%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--card) 78%, transparent); padding: .45rem .75rem; color: var(--primary); font-size: .68rem; font-weight: 600; box-shadow: 0 8px 24px oklch(.12 .03 255 / .12); backdrop-filter: blur(18px); transition: opacity .15s ease, transform .15s ease; }
 
 @utility brief-home-widget {

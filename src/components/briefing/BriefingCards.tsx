@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 function CardShell({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <section className={cn("brief-card", className)}>{children}</section>;
+  return <section className={cn("brief-section", className)}>{children}</section>;
 }
 function CardHeading({ icon, title, action }: { icon: BriefIconName; title: string; action?: string | undefined }) {
   return <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3"><div className="flex min-w-0 items-center gap-2.5"><span className="icon-well"><BriefIcon name={icon} /></span><h2 className="truncate font-display text-[15px] font-semibold">{title}</h2></div>{action && <span className="text-xs font-medium text-muted-foreground">{action}</span>}</div>;
