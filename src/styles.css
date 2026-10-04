@@ -434,6 +434,16 @@
   color: color-mix(in oklab, var(--foreground) 76%, var(--background)) !important;
 }
 
+/* News uses a single white editorial type system in both themes. */
+.discover-page,
+.discover-page :where(h1, h2, h3, p, span, time, a, button, label, [role="button"], [role="tab"], [role="menuitem"]) {
+  color: oklch(0.98 0.005 220) !important;
+}
+
+.discover-page :where(svg) {
+  color: oklch(0.98 0.005 220) !important;
+}
+
 .dark .discover-page :where(.discover-tab, .discover-icon-btn, .discover-menu, .discover-banner),
 .dark .settings-page :where(.bg-secondary\/60, .brief-card .icon-well) {
   background: color-mix(in oklab, oklch(0.25 0.05 255) 58%, transparent);
