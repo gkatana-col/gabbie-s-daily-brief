@@ -94,6 +94,10 @@ public class BriefLiveNotificationPlugin extends Plugin {
         }
     }
 
+    static void cancel(Context ctx) {
+        try { NotificationManagerCompat.from(ctx).cancel(NOTIFICATION_ID); } catch (Exception ignored) {}
+    }
+
     /** Re-posts the same notification (same ID/channel/style) from the period receiver. Never throws. */
     static void repost(Context ctx, String title, String text, int progress) {
         try {

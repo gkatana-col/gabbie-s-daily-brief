@@ -20,11 +20,16 @@ final class BriefSchedule {
     private static final String PREFS = "brief_live";
     private BriefSchedule() {}
 
-    /** Same rule as the web time-of-day logic; 22–04 keeps the evening label (no Night Brief). */
+    /** The three active periods. Hours 22–04 are inactive; there is no Night Brief. */
     static String greeting(int h) {
         if (h >= 5 && h <= 10) return "Добро утро";
         if (h >= 11 && h <= 16) return "Добър ден";
-        return "Добър вечер";
+        if (h >= 17 && h <= 21) return "Добър вечер";
+        return null;
+    }
+
+    private static boolean isActiveHour(int hour) {
+        return hour >= 5 && hour <= 21;
     }
 
     static long nextBoundary(long now) {
@@ -49,15 +54,20 @@ final class BriefSchedule {
 
     static boolean isActive(Context ctx) { return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean("active", false); }
 
-    /** Called at each boundary: refresh greeting in the existing notification (if still active) and widgets. */
+    /** Applies the period transition while the app is backgrounded or closed. */
     static void onBoundary(Context ctx) {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         SharedPreferences p = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if (p.getBoolean("active", false)) {
-            String title = "Brief · " + greeting(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-            BriefLiveNotificationPlugin.repost(ctx, title, p.getString("text", ""), p.getInt("progress", 25));
+
+        if (!isActiveHour(hour)) {
+            BriefLiveNotificationPlugin.cancel(ctx);
+            setActive(ctx, false, null, null, 0);
+            return;
         }
-        BriefWidgetProvider.refreshAll(ctx);
-        schedule(ctx);
+
+        String title = "Brief · " + greeting(hour);
+        BriefLiveNotificationPlugin.repost(ctx, title, p.getString("text", ""), p.getInt("progress", 25));
+        setActive(ctx, true, title, p.getString("text", ""), p.getInt("progress", 25));
     }
 
     static void schedule(Context ctx) {
