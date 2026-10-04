@@ -173,11 +173,9 @@
 .floating-nav { position: fixed; right: 0; bottom: max(.8rem, env(safe-area-inset-bottom)); left: 0; z-index: 40; display: flex; justify-content: center; padding: 0 1rem; transition: transform .28s ease, opacity .28s ease; }
 .floating-nav-hidden { pointer-events: none; opacity: 0; transform: translateY(140%); }
 .floating-nav-inner { display: grid; width: min(100%, 30rem); grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; border: 1px solid color-mix(in oklab, var(--card) 55%, var(--border)); border-radius: 1.6rem; background: color-mix(in oklab, var(--card) 62%, transparent); padding: .35rem; box-shadow: 0 18px 50px oklch(.12 .035 255 / .2), inset 0 1px color-mix(in oklab, white 30%, transparent); backdrop-filter: blur(28px) saturate(145%); }
-.app-atmosphere { min-height: 100dvh; background: var(--background); transition: background .7s ease; }
-.atmosphere-morning { background: radial-gradient(circle at 12% 0%, oklch(.85 .14 70 / .42), transparent 42%), radial-gradient(circle at 90% 20%, oklch(.78 .12 220 / .2), transparent 38%), var(--background); }
-.atmosphere-midday { background: radial-gradient(circle at 82% 0%, oklch(.82 .16 205 / .38), transparent 44%), radial-gradient(circle at 0% 52%, oklch(.82 .13 230 / .2), transparent 34%), var(--background); }
-.atmosphere-evening { background: radial-gradient(circle at 85% 0%, oklch(.72 .18 45 / .42), transparent 45%), radial-gradient(circle at 10% 35%, oklch(.65 .16 320 / .22), transparent 40%), var(--background); }
-.atmosphere-night { background: radial-gradient(circle at 75% 0%, oklch(.38 .12 275 / .45), transparent 45%), radial-gradient(circle at 10% 60%, oklch(.3 .1 205 / .35), transparent 38%), var(--background); }
+.app-atmosphere { min-height: 100dvh; background: linear-gradient(165deg, var(--sky-top) 0%, var(--sky-middle) 52%, var(--sky-horizon) 100%); transition: background 60s linear; }
+.app-atmosphere::before { content: ""; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 18% 8%, color-mix(in srgb, var(--sky-horizon) 42%, transparent), transparent 48%), radial-gradient(ellipse at 88% 26%, color-mix(in srgb, var(--sky-middle) 22%, transparent), transparent 46%); opacity: .72; transition: background 60s linear, opacity 60s linear; }
+.atmosphere-morning, .atmosphere-midday, .atmosphere-evening, .atmosphere-night { background-color: var(--sky-middle); }
 .brief-page { display: grid; gap: 0; }
 .brief-page > section:first-child { padding-bottom: 2.5rem; }
 .brief-grid { display: grid; gap: 0; }

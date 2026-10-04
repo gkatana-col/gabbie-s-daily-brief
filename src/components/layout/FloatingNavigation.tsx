@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
 import { getTimeOfDay, type TimeOfDay } from "@/features/briefing/briefingEngine";
 import { BriefIcon, type BriefIconName } from "@/components/BriefIcon";
@@ -49,23 +49,54 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
   return <>{(pull > 0 || refreshing) && <div className="pull-indicator" style={{ opacity: Math.min(1, pull / 46), transform: `translate(-50%, ${Math.min(18, pull / 3)}px)` }}><BriefIcon name="refresh" size={16} className={refreshing ? "animate-spin" : ""} /><span>{refreshing ? "Обновяване" : "Издърпай за обновяване"}</span></div>}{children}</>;
 }
 
+type SkyColor = [number, number, number];
+
+const skyStops: ReadonlyArray<[number, SkyColor, SkyColor, SkyColor]> = [
+  [0, [8, 23, 55], [18, 39, 82], [30, 52, 94]],
+  [300, [30, 52, 94], [77, 100, 139], [238, 225, 205]],
+  [480, [238, 225, 205], [137, 190, 225], [250, 247, 239]],
+  [660, [177, 214, 237], [92, 170, 219], [248, 252, 253]],
+  [960, [92, 170, 219], [124, 181, 221], [248, 251, 253]],
+  [1080, [83, 133, 189], [124, 132, 181], [235, 201, 175]],
+  [1320, [42, 66, 126], [66, 65, 116], [116, 94, 127]],
+  [1440, [8, 23, 55], [18, 39, 82], [30, 52, 94]],
+];
+
+const interpolateColor = (from: SkyColor, to: SkyColor, amount: number) => from.map((value, index) => Math.round(value + ((to[index] ?? value) - value) * amount)) as SkyColor;
+const rgb = (color: SkyColor) => `rgb(${color.join(",")})`;
+
+function getSkyColors(date: Date) {
+  const minutes = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
+  const normalizedMinutes = minutes < 300 ? minutes + 1440 : minutes;
+  const stopIndex = skyStops.findIndex((stop, index) => normalizedMinutes >= stop[0] && normalizedMinutes <= (skyStops[index + 1]?.[0] ?? 1440));
+  const index = stopIndex < 0 ? skyStops.length - 2 : stopIndex;
+  const startStop = skyStops[index] ?? skyStops[0]!;
+  const endStop = skyStops[index + 1] ?? skyStops[skyStops.length - 1]!;
+  const [start, startTop, startMiddle, startHorizon] = startStop;
+  const [end, endTop, endMiddle, endHorizon] = endStop;
+  const amount = (normalizedMinutes - start) / (end - start);
+  return { top: rgb(interpolateColor(startTop, endTop, amount)), middle: rgb(interpolateColor(startMiddle, endMiddle, amount)), horizon: rgb(interpolateColor(startHorizon, endHorizon, amount)) };
+}
+
 export function getAtmosphere(hour = new Date().getHours()): TimeOfDay {
   return getTimeOfDay(hour);
 }
 
 export function AtmosphereShell({ children }: { children: React.ReactNode }) {
-  const [period, setPeriod] = useState<TimeOfDay>(() => getAtmosphere());
+  const [now, setNow] = useState(() => new Date());
+  const period = getAtmosphere(now.getHours());
+  const sky = useMemo(() => getSkyColors(now), [now]);
 
   useEffect(() => {
-    const updatePeriod = () => setPeriod(getAtmosphere());
-    const interval = window.setInterval(updatePeriod, 60_000);
-    window.addEventListener("focus", updatePeriod);
+    const updateTime = () => setNow(new Date());
+    const interval = window.setInterval(updateTime, 60_000);
+    window.addEventListener("focus", updateTime);
     return () => {
       window.clearInterval(interval);
-      window.removeEventListener("focus", updatePeriod);
+      window.removeEventListener("focus", updateTime);
     };
   }, []);
 
-  return <div className={`app-atmosphere atmosphere-${period}`}><PullToRefresh>{children}</PullToRefresh></div>;
+  return <div className={`app-atmosphere atmosphere-${period}`} style={{ "--sky-top": sky.top, "--sky-middle": sky.middle, "--sky-horizon": sky.horizon } as CSSProperties}><PullToRefresh>{children}</PullToRefresh></div>;
 }
 
