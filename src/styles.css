@@ -275,17 +275,16 @@
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 
 /* Now Brief composition */
-.brief-now-layout { position: relative; gap: 0; touch-action: pan-x; }
+.brief-now-layout { position: relative; gap: 0; touch-action: pan-x; isolation: isolate; }
+.brief-now-layout::after { position: absolute; z-index: -2; inset: -5rem -10rem; content: ""; background: var(--atmosphere-base, var(--background)); transition: background 90s ease-in-out; pointer-events: none; }
+.brief-now-layout::before { position: absolute; z-index: -1; top: -14rem; right: -18rem; width: 42rem; height: 42rem; border-radius: 50%; content: ""; background: radial-gradient(ellipse at 42% 35%, var(--atmosphere-glow, transparent), transparent 65%), radial-gradient(ellipse at 28% 85%, var(--atmosphere-wash, transparent), transparent 62%); filter: blur(28px); opacity: .9; transition: background 90s ease-in-out; pointer-events: none; }
+.brief-atmosphere-inactive { --atmosphere-base: oklch(.16 .035 235); --atmosphere-glow: oklch(.3 .08 225 / .26); --atmosphere-wash: oklch(.25 .06 250 / .2); }
+@media (prefers-reduced-motion: reduce) { .brief-now-layout::before, .brief-now-layout::after { transition: none; } }
 .brief-refresh-indicator { position: absolute; z-index: 2; top: 0; left: 50%; display: flex; align-items: center; gap: .45rem; height: 2rem; color: var(--muted-foreground); font-size: .68rem; font-weight: 600; opacity: 0; pointer-events: none; transform: translate(-50%, calc(-100% + var(--pull-distance, 0px))); transition: opacity .18s ease, transform .18s ease; }
 .brief-refresh-indicator:not([aria-hidden="true"]) { opacity: 1; }
 .brief-refresh-glyph { display: grid; width: 1.85rem; height: 1.85rem; place-items: center; border: 1px solid color-mix(in oklab, var(--primary) 22%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--card) 58%, transparent); color: var(--primary); box-shadow: inset 0 1px color-mix(in oklab, white 30%, transparent); backdrop-filter: blur(14px); }
 .brief-refresh-indicator.is-refreshing .brief-refresh-glyph { animation: brief-refresh-spin .8s linear infinite; }
 @keyframes brief-refresh-spin { to { transform: rotate(360deg); } }
-.brief-now-layout::before { position: absolute; z-index: -1; top: -13rem; right: -19rem; width: 38rem; height: 38rem; border-radius: 50%; content: ""; background: radial-gradient(circle, color-mix(in oklab, var(--time-glow) 32%, transparent), transparent 68%); filter: blur(10px); pointer-events: none; }
-.brief-time-morning { --time-glow: oklch(0.79 0.13 205); --time-wash: oklch(0.9 0.08 185); }
-.brief-time-evening { --time-glow: oklch(0.72 0.15 325); --time-wash: oklch(0.78 0.11 35); }
-.dark .brief-time-morning { --time-glow: oklch(0.48 0.13 225); --time-wash: oklch(0.34 0.09 195); }
-.dark .brief-time-evening { --time-glow: oklch(0.44 0.13 325); --time-wash: oklch(0.4 0.09 35); }
 .brief-now-layout > * { position: relative; }
 .brief-now-layout .brief-hero { min-height: 22rem; padding: .35rem .2rem 4rem; }
 .brief-now-layout .brief-hero::after { position: absolute; z-index: -1; right: 3%; bottom: 3.2rem; width: 15rem; height: 7rem; border-radius: 50%; content: ""; background: radial-gradient(ellipse, color-mix(in oklab, var(--time-wash) 28%, transparent), transparent 72%); filter: blur(22px); }

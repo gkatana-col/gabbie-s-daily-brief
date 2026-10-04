@@ -19,16 +19,50 @@ export const Route = createFileRoute("/")({
   ] }),
 });
 
+function interpolateAtmosphere(now: Date) {
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  const keyframes = [
+    { at: 0, values: [0.16, 0.035, 235, 0.34, 0.09, 195, 0.38, 0.09, 220] },
+    { at: 300, values: [0.78, 0.025, 220, 0.18, 0.07, 195, 0.98, 0.03, 220] },
+    { at: 660, values: [0.94, 0.018, 220, 0.14, 0.05, 190, 0.98, 0.015, 220] },
+    { at: 1020, values: [0.86, 0.025, 235, 0.2, 0.08, 315, 0.94, 0.04, 35] },
+    { at: 1320, values: [0.18, 0.035, 235, 0.34, 0.1, 325, 0.42, 0.1, 35] },
+    { at: 1440, values: [0.16, 0.035, 235, 0.34, 0.09, 195, 0.38, 0.09, 220] },
+  ];
+  const extendedMinutes = minutes < 300 ? minutes + 1440 : minutes;
+  const frames = keyframes.map((frame) => ({ ...frame, at: frame.at < 300 ? frame.at + 1440 : frame.at }));
+  const left = frames.find((frame, index) => extendedMinutes >= frame.at && extendedMinutes <= (frames[index + 1]?.at ?? 1440));
+  const start = left ?? frames[0];
+  const end = frames[frames.indexOf(start) + 1] ?? frames[0];
+  const progress = end.at === start.at ? 0 : (extendedMinutes - start.at) / (end.at - start.at);
+  const values = start.values.map((value, index) => value + (end.values[index] - value) * progress);
+  const [baseL, baseC, baseH, glowL, glowC, glowH, washL, washC, washH] = values;
+  return {
+    className: minutes >= 300 && minutes < 660 ? "morning" : minutes >= 660 && minutes < 1020 ? "midday" : minutes >= 1020 && minutes < 1320 ? "evening" : "inactive",
+    style: {
+      "--atmosphere-base": `oklch(${baseL} ${baseC} ${baseH})`,
+      "--atmosphere-glow": `oklch(${glowL} ${glowC} ${glowH} / .46)`,
+      "--atmosphere-wash": `oklch(${washL} ${washC} ${washH} / .34)`,
+    } as React.CSSProperties,
+  };
+}
+
 function Index() {
   const { briefingType, setBriefingType, t, briefingLanguage } = useApp();
   const briefing = useBriefing(briefingType);
   const nextAlarm = useNextAlarm();
+  const [localTime, setLocalTime] = useState(() => new Date());
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const atmosphere = interpolateAtmosphere(localTime);
   const touchStart = useRef<number | null>(null);
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toggleBriefing = () => setBriefingType(briefingType === "morning" ? "evening" : "morning");
 
+  useEffect(() => {
+    const clock = window.setInterval(() => setLocalTime(new Date()), 60_000);
+    return () => window.clearInterval(clock);
+  }, []);
   useEffect(() => () => { if (refreshTimer.current) clearTimeout(refreshTimer.current); }, []);
 
   const finishRefresh = () => {
@@ -53,7 +87,7 @@ function Index() {
     setPullDistance(0);
   };
 
-  return <div className={`brief-flow brief-now-layout brief-time-${briefing.type}`} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} style={{ "--pull-distance": `${pullDistance}px` } as React.CSSProperties}>
+  return <div className={`brief-flow brief-now-layout brief-time-${briefing.type} brief-atmosphere-${atmosphere.className}`} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} style={{ ...atmosphere.style, "--pull-distance": `${pullDistance}px` } as React.CSSProperties}>
     <div className={`brief-refresh-indicator${isRefreshing ? " is-refreshing" : ""}`} aria-live="polite" aria-hidden={pullDistance === 0 && !isRefreshing}>
       <span className="brief-refresh-glyph" aria-hidden="true"><BriefIcon name="refresh" size={16} /></span>
       <span>{isRefreshing ? "Обновяване" : pullDistance >= 64 ? "Пусни за обновяване" : "Издърпай за обновяване"}</span>
