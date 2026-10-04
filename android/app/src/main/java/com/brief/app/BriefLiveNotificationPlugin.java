@@ -63,6 +63,7 @@ public class BriefLiveNotificationPlugin extends Plugin {
     @PluginMethod
     public void stop(PluginCall call) {
         NotificationManagerCompat.from(getContext()).cancel(NOTIFICATION_ID);
+        BriefSchedule.setActive(getContext(), false, null, null, 0);
         status(call, "stopped");
     }
 
@@ -84,6 +85,7 @@ public class BriefLiveNotificationPlugin extends Plugin {
                 n = build(ctx, title, text, progress, null);
             }
             NotificationManagerCompat.from(ctx).notify(NOTIFICATION_ID, n);
+            BriefSchedule.setActive(ctx, true, title, text, progress);
             status(call, okStatus);
         } catch (SecurityException e) {
             call.reject("permission_denied", "PERMISSION_DENIED");
@@ -92,11 +94,23 @@ public class BriefLiveNotificationPlugin extends Plugin {
         }
     }
 
-    private Notification build(Context ctx, String title, String text, int progress, Integer accent) {
+    /** Re-posts the same notification (same ID/channel/style) from the period receiver. Never throws. */
+    static void repost(Context ctx, String title, String text, int progress) {
+        try {
+            if (Build.VERSION.SDK_INT >= 33 && ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) return;
+            ensureChannel(ctx);
+            Integer accent = BriefTimeOfDayTheme.resolve(null);
+            Notification n;
+            try { n = build(ctx, title, text, progress, accent); } catch (Exception e) { n = build(ctx, title, text, progress, null); }
+            NotificationManagerCompat.from(ctx).notify(NOTIFICATION_ID, n);
+        } catch (Exception ignored) {}
+    }
+
+    private static Notification build(Context ctx, String title, String text, int progress, Integer accent) {
         return Build.VERSION.SDK_INT >= 36 ? buildLiveUpdate(ctx, title, text, progress, accent) : buildCompat(ctx, title, text, progress, accent);
     }
 
-    private void ensureChannel(Context ctx) {
+    private static void ensureChannel(Context ctx) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
         NotificationManager nm = ctx.getSystemService(NotificationManager.class);
         if (nm.getNotificationChannel(CHANNEL_ID) != null) return;
@@ -107,13 +121,13 @@ public class BriefLiveNotificationPlugin extends Plugin {
         nm.createNotificationChannel(ch);
     }
 
-    private PendingIntent contentIntent(Context ctx) {
+    private static PendingIntent contentIntent(Context ctx) {
         Intent intent = new Intent(ctx, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /** Android 16 (API 36): official Live Update — ProgressStyle + promoted ongoing request. */
-    private Notification buildLiveUpdate(Context ctx, String title, String text, int progress, Integer accent) {
+    private static Notification buildLiveUpdate(Context ctx, String title, String text, int progress, Integer accent) {
         Notification.ProgressStyle style = new Notification.ProgressStyle()
             .setProgress(progress)
             .setStyledByProgress(true);
@@ -139,7 +153,7 @@ public class BriefLiveNotificationPlugin extends Plugin {
     }
 
     /** Older Android: plain ongoing notification (still carries the Samsung hints on One UI). */
-    private Notification buildCompat(Context ctx, String title, String text, int progress, Integer accent) {
+    private static Notification buildCompat(Context ctx, String title, String text, int progress, Integer accent) {
         Bundle extras = new Bundle();
         SamsungLiveNotificationExtras.apply(extras, title, text);
         NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, CHANNEL_ID)
