@@ -24,8 +24,9 @@ export const LIVE_NOTIFICATION_TEST = {
 export function buildInitialTestContent(now: Date = new Date()): LiveNotificationContent {
   // Appends live weather only when a fresh real reading exists; otherwise the text is unchanged.
   const { status, reading } = getWeatherState();
+  const greeting = getTimeOfDayGreeting(now.getHours(), "bg");
   const weather = status === "ok" && reading ? ` · ${reading.temperature}°${reading.unit === "F" ? "F" : ""} ${conditionFor(reading.code, "bg")}` : "";
-  return { title: `Brief · ${getTimeOfDayGreeting(now.getHours(), "bg")}`, text: `Твоят ден започва${weather}`, progress: 25 };
+  return { title: `Brief · ${greeting}`, text: `${greeting}${weather}`, progress: 25 };
 }
 
 const STATUSES: LiveNotificationStatus[] = ["shown", "updated", "stopped", "unsupported", "permission_denied", "error"];
