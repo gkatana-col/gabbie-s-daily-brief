@@ -169,7 +169,7 @@ function buildBriefing(input: BriefingInput): Briefing {
   let summary: string;
   if (briefingType === "morning") {
     if (!todayEvents.length && !relevantTasks.length) summary = isBg ? "Нямаш записани събития или задачи за днес." : "You have no events or tasks scheduled for today.";
-    else if (isBg) summary = `Днес ��маш ${todayEvents.length} ${plural(todayEvents.length, "ангажимент", "ангажимента")} и ${relevantTasks.length} ${plural(relevantTasks.length, "задача", "задачи")}.`;
+    else if (isBg) summary = `Днес имаш ${todayEvents.length} ${plural(todayEvents.length, "ангажимент", "ангажимента")} и ${relevantTasks.length} ${plural(relevantTasks.length, "задача", "задачи")}.`;
     else summary = `Today you have ${todayEvents.length} ${plural(todayEvents.length, "event", "events")} and ${relevantTasks.length} ${plural(relevantTasks.length, "task", "tasks")}.`;
   } else {
     const total = completedItems.length + unfinishedItems.length;
