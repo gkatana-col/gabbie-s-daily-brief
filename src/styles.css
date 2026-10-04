@@ -195,11 +195,25 @@
 }
 
 @utility font-display { font-family: var(--font-display); }
-@utility brief-card { border: 1px solid color-mix(in oklab, var(--border) 52%, transparent); border-radius: 1.65rem; background: color-mix(in oklab, var(--card) var(--surface-alpha), transparent); color: var(--card-foreground); padding: 1.35rem; box-shadow: var(--shadow-card), inset 0 1px color-mix(in oklab, white 26%, transparent); backdrop-filter: blur(18px) saturate(110%); }
-@utility summary-card { background: color-mix(in oklab, var(--accent) 42%, var(--card)); border-color: color-mix(in oklab, var(--primary) 18%, transparent); }
-@utility insight-card { background: color-mix(in oklab, var(--card) 84%, var(--accent)); }
-@utility evening-card { background: color-mix(in oklab, var(--card) 90%, var(--secondary)); }
-@utility weather-card { background: color-mix(in oklab, var(--card) 88%, oklch(0.83 0.035 220)); }
+  @utility brief-card { position: relative; border: 0; border-radius: 0; background: transparent; color: var(--card-foreground); padding: 1.05rem 0; box-shadow: none; backdrop-filter: none; }
+@utility summary-card { background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 38%, transparent), transparent 70%); border-radius: 1.5rem; padding: 1.1rem 1rem; }
+@utility insight-card { background: transparent; }
+@utility evening-card { background: transparent; }
+@utility weather-card { background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 24%, transparent), transparent 72%); border-radius: 1.5rem; padding: 1.1rem 1rem; }
+
+.brief-flow { display: grid; gap: .35rem; }
+.brief-sections { display: grid; gap: 0; }
+.brief-sections > * + *, .brief-flow > .brief-card + .brief-card { border-top: 1px solid color-mix(in oklab, var(--border) 52%, transparent); }
+.brief-inline-meta { display: flex; align-items: center; gap: .75rem; border-top: 1px solid color-mix(in oklab, var(--border) 52%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--border) 52%, transparent); padding: .85rem 0; }
+.brief-inline-meta svg { color: var(--primary); }
+.brief-card h2 { letter-spacing: -.02em; }
+.brief-card .icon-well { background: transparent; }
+
+@media (min-width: 700px) {
+  .brief-sections { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); column-gap: 2rem; }
+  .brief-sections > * + * { border-top: 0; }
+  .brief-sections > *:nth-child(n + 3) { border-top: 1px solid color-mix(in oklab, var(--border) 52%, transparent); }
+}
 @utility icon-well { display: grid; width: 1.875rem; height: 1.875rem; flex-shrink: 0; place-items: center; border-radius: 999px; background: color-mix(in oklab, var(--secondary) 72%, transparent); color: var(--primary); }
 @utility eyebrow { display: inline-flex; align-items: center; gap: .4rem; border-radius: 999px; background: color-mix(in oklab, var(--primary) 10%, transparent); padding: .35rem .65rem; color: var(--primary); font-size: .7rem; font-weight: 600; }
 @utility dynamic-pill { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid color-mix(in oklab, var(--primary) 18%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--card) 78%, transparent); padding: .45rem .7rem; color: var(--primary); font-size: .7rem; font-weight: 600; backdrop-filter: blur(14px); }
