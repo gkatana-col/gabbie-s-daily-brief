@@ -275,28 +275,29 @@
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 
 /* Now Brief composition */
-.brief-now-layout { gap: 0; }
-.brief-now-layout::before { position: absolute; z-index: -1; top: -12rem; right: -18rem; width: 36rem; height: 36rem; border-radius: 50%; content: ""; background: radial-gradient(circle, color-mix(in oklab, var(--time-glow) 34%, transparent), transparent 68%); filter: blur(8px); pointer-events: none; }
-.brief-time-morning { --time-glow: oklch(0.75 0.16 35); --time-wash: oklch(0.88 0.08 55); }
-.brief-time-evening { --time-glow: oklch(0.68 0.18 320); --time-wash: oklch(0.72 0.13 25); }
-.dark .brief-time-morning { --time-glow: oklch(0.58 0.16 35); --time-wash: oklch(0.38 0.1 55); }
-.dark .brief-time-evening { --time-glow: oklch(0.5 0.16 320); --time-wash: oklch(0.42 0.1 25); }
+.brief-now-layout { position: relative; gap: 0; }
+.brief-now-layout::before { position: absolute; z-index: -1; top: -13rem; right: -19rem; width: 38rem; height: 38rem; border-radius: 50%; content: ""; background: radial-gradient(circle, color-mix(in oklab, var(--time-glow) 32%, transparent), transparent 68%); filter: blur(10px); pointer-events: none; }
+.brief-time-morning { --time-glow: oklch(0.79 0.13 205); --time-wash: oklch(0.9 0.08 185); }
+.brief-time-evening { --time-glow: oklch(0.72 0.15 325); --time-wash: oklch(0.78 0.11 35); }
+.dark .brief-time-morning { --time-glow: oklch(0.48 0.13 225); --time-wash: oklch(0.34 0.09 195); }
+.dark .brief-time-evening { --time-glow: oklch(0.44 0.13 325); --time-wash: oklch(0.4 0.09 35); }
 .brief-now-layout > * { position: relative; }
-.brief-now-layout .brief-hero { min-height: 18rem; padding: .35rem .2rem 2.6rem; }
-.brief-now-layout .brief-hero::after { position: absolute; z-index: -1; right: 8%; bottom: 1.8rem; width: 10rem; height: 5rem; border-radius: 50%; content: ""; background: radial-gradient(ellipse, color-mix(in oklab, var(--time-wash) 30%, transparent), transparent 72%); filter: blur(18px); }
+.brief-now-layout .brief-hero { min-height: 22rem; padding: .35rem .2rem 4rem; }
+.brief-now-layout .brief-hero::after { position: absolute; z-index: -1; right: 3%; bottom: 3.2rem; width: 15rem; height: 7rem; border-radius: 50%; content: ""; background: radial-gradient(ellipse, color-mix(in oklab, var(--time-wash) 28%, transparent), transparent 72%); filter: blur(22px); }
 .brief-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
 .brief-hero-context { margin-top: .45rem; color: var(--muted-foreground); font-size: .8rem; font-weight: 550; }
-.brief-kicker { color: var(--muted-foreground); font-size: .72rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
-.brief-now-layout .summary-card { margin: 0 -.25rem; min-height: 12rem; border-radius: 1.75rem; background: color-mix(in oklab, var(--card) 66%, transparent); padding: 1.45rem 1.3rem 1.55rem; box-shadow: 0 18px 50px color-mix(in oklab, var(--foreground) 5%, transparent); backdrop-filter: blur(24px) saturate(125%); }
-.brief-now-layout .summary-card .eyebrow { color: var(--primary); }
-.brief-now-layout .summary-card h2 { font-size: 1.45rem; font-weight: 520; letter-spacing: -.035em; }
+.brief-kicker { color: var(--muted-foreground); font-size: .72rem; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+.brief-now-layout .brief-hero h1 { max-width: 30rem; font-size: clamp(2.8rem, 9vw, 4.6rem); letter-spacing: -.07em; }
+.brief-now-layout .summary-card { margin: 0 -.2rem; min-height: 12rem; border-top: 1px solid color-mix(in oklab, var(--border) 40%, transparent); border-radius: 0; background: transparent; padding: 1.8rem .2rem 1.9rem; box-shadow: none; backdrop-filter: none; }
+.brief-now-layout .summary-card .eyebrow { color: var(--muted-foreground); }
+.brief-now-layout .summary-card h2 { font-size: 1.5rem; font-weight: 520; letter-spacing: -.035em; }
 .brief-now-layout .summary-card p { max-width: 42rem; font-size: 1rem; line-height: 1.75; }
-.brief-now-layout .eyebrow { background: transparent; padding: 0; color: var(--muted-foreground); font-size: .68rem; letter-spacing: .07em; text-transform: uppercase; }
+.brief-now-layout .eyebrow { background: transparent; padding: 0; color: var(--muted-foreground); font-size: .68rem; letter-spacing: .09em; text-transform: uppercase; }
 .brief-now-layout .brief-inline-meta { margin: 0 -.2rem; border-color: color-mix(in oklab, var(--border) 35%, transparent); padding: .9rem .2rem; }
-.brief-now-sections { display: grid; gap: 0; margin: 1.25rem -.2rem 0; }
-.brief-now-sections > * { padding: 1.4rem .2rem; }
+.brief-now-sections { display: grid; gap: 0; margin: 0 -.2rem; }
+.brief-now-sections > * { padding: 1.5rem .2rem; }
 .brief-now-sections > * + * { border-top: 1px solid color-mix(in oklab, var(--border) 38%, transparent); }
-.brief-now-sections .weather-card { order: -2; margin: 0 -.2rem 1.1rem; border-radius: 1.65rem; background: color-mix(in oklab, var(--accent) 34%, transparent); padding: 1.25rem 1.1rem; }
+.brief-now-sections .weather-card { order: -2; margin: 0 -.2rem; border-radius: 1.6rem; background: color-mix(in oklab, var(--accent) 30%, transparent); padding: 1.3rem 1.1rem; }
 .brief-now-sections .weather-card .brief-card { padding: 0; }
 .brief-now-sections .weather-card h2 { font-size: .8rem; font-weight: 600; }
 .brief-now-sections .weather-card .text-5xl { font-size: 3.4rem; font-weight: 450; letter-spacing: -.06em; }

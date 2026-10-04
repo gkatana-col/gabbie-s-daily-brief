@@ -24,7 +24,7 @@ export function GreetingCard({ briefing, onPillClick }: { briefing: Briefing; on
 
 export function DailySummaryCard({ briefing }: { briefing: Briefing }) {
   const { t } = useApp();
-  return <CardShell className="summary-card"><div className="mb-5 flex items-center justify-between"><span className="eyebrow"><BriefIcon name="aiInsight" size={13} />{briefing.type === "morning" ? t("morningBrief") : t("eveningBrief")}</span><span className="text-xs text-muted-foreground">{t("generatedNow")}</span></div><h2 className="mb-3 font-display text-xl font-semibold">{t("dailySummary")}</h2><p className="text-[15px] leading-7 text-card-foreground/80">{briefing.summary}</p></CardShell>;
+  return <CardShell className="summary-card"><div className="mb-5 flex items-center justify-between"><span className="eyebrow">{briefing.type === "morning" ? t("morningBrief") : t("eveningBrief")}</span><span className="text-xs text-muted-foreground">{t("generatedNow")}</span></div><h2 className="mb-3 font-display text-xl font-semibold">{t("dailySummary")}</h2><p className="text-[15px] leading-7 text-card-foreground/80">{briefing.summary}</p></CardShell>;
 }
 
 export function PriorityCard({ briefing }: { briefing: Briefing }) {
