@@ -7,6 +7,8 @@ export const webNativeBridge: NativeBridge = {
   isNativeApp: () => false,
   getPlatform: () => "web",
   getPlatformInfo: async () => ({ ...webPlatformInfo }),
+  getWidgetAppearance: async () => "system",
+  setWidgetAppearance: async () => undefined,
   async openExternalUrl(url) {
     if (typeof window === "undefined") return;
     window.open(url, "_blank", "noopener,noreferrer");
@@ -23,6 +25,8 @@ export const webNativeBridge: NativeBridge = {
   startLiveNotification: async () => "unsupported",
   updateLiveNotification: async () => "unsupported",
   stopLiveNotification: async () => "unsupported",
+  getCurrentLocation: async () => { throw new Error("location_unsupported"); },
+  getNextAlarm: async () => null,
 };
 
 let activeBridge: NativeBridge = webNativeBridge;
@@ -34,6 +38,8 @@ export const nativeBridge: NativeBridge = {
   isNativeApp: () => activeBridge.isNativeApp(),
   getPlatform: () => activeBridge.getPlatform(),
   getPlatformInfo: () => activeBridge.getPlatformInfo().catch(() => ({ ...webPlatformInfo })),
+  getWidgetAppearance: () => activeBridge.getWidgetAppearance().catch(() => "system" as const),
+  setWidgetAppearance: (appearance) => activeBridge.setWidgetAppearance(appearance).catch(() => undefined),
   openExternalUrl: (url) => activeBridge.openExternalUrl(url).catch(() => undefined),
   requestPermission: (permission) => activeBridge.requestPermission(permission).catch(() => false),
   getDeviceTimezone: () => activeBridge.getDeviceTimezone(),
@@ -45,4 +51,5 @@ export const nativeBridge: NativeBridge = {
   startLiveNotification: (c) => activeBridge.startLiveNotification(c).catch(() => "error" as const),
   updateLiveNotification: (c) => activeBridge.updateLiveNotification(c).catch(() => "error" as const),
   stopLiveNotification: () => activeBridge.stopLiveNotification().catch(() => "error" as const),
+  getNextAlarm: () => activeBridge.getNextAlarm().catch(() => null),
 };

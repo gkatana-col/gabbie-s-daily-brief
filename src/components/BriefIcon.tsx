@@ -22,13 +22,11 @@ import {
   GraduationCap,
   Home,
   Languages,
-  Leaf,
   MapPin,
   MoonStar,
   Newspaper,
   Palette,
   Settings,
-  Sparkles,
   Sun,
   TriangleAlert,
   type LucideIcon,
@@ -70,7 +68,7 @@ export type BriefIconName =
   | "discover";
 
 const icons: Record<BriefIconName, LucideIcon> = {
-  aiInsight: Sparkles,
+  aiInsight: Info,
   briefUpdates: Bell,
   calendar: CalendarDays,
   complete: Check,
@@ -90,7 +88,7 @@ const icons: Record<BriefIconName, LucideIcon> = {
   university: GraduationCap,
   weather: CloudSun,
   work: BriefcaseBusiness,
-  brand: Leaf,
+  brand: Bell,
   back: ArrowLeft,
   bookmark: Bookmark,
   bookmarked: BookmarkCheck,

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import type { BriefingCalendarItem } from "@/features/briefing/types";
-import { getNativeCalendarProvider } from "./calendarProvider";
+import { getNativeCalendarProvider, subscribeNativeCalendarProvider } from "./calendarProvider";
 
 export type NativeCalendarStatus = "web" | "loading" | "ok" | "permission_denied" | "error";
 
@@ -17,7 +17,7 @@ export interface NativeCalendarState {
  * On Android it reads real events via the existing READ_CALENDAR integration; it never prompts on its own.
  */
 export function useNativeCalendarEvents(): NativeCalendarState {
-  const provider = getNativeCalendarProvider();
+  const provider = useSyncExternalStore(subscribeNativeCalendarProvider, getNativeCalendarProvider, getNativeCalendarProvider);
   const isNative = provider.source === "native";
   const [state, setState] = useState<{ status: NativeCalendarStatus; items: BriefingCalendarItem[] }>({
     status: isNative ? "loading" : "web",
@@ -41,7 +41,17 @@ export function useNativeCalendarEvents(): NativeCalendarState {
 
   useEffect(() => {
     void load();
-  }, [load]);
+    if (!isNative) return;
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    window.addEventListener("focus", refreshWhenVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+      window.removeEventListener("focus", refreshWhenVisible);
+    };
+  }, [isNative, load]);
 
   const requestAccess = useCallback(async () => {
     if (!isNative) return;

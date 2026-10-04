@@ -1,0 +1,116 @@
+name: Build Android debug APK
+
+on:
+  push:
+    branches:
+      - main
+      - 'v0/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '21'
+  ANDROID_API_LEVEL: '35'
+  ANDROID_BUILD_TOOLS: '35.0.0'
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+
+      - name: Set up Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sdkmanager_path="$(command -v sdkmanager || true)"
+          if [[ -z "${sdkmanager_path}" ]]; then
+            for candidate in \
+              "${ANDROID_HOME:-}/cmdline-tools/latest/bin/sdkmanager" \
+              "${ANDROID_SDK_ROOT:-}/cmdline-tools/latest/bin/sdkmanager" \
+              "/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" \
+              "/opt/android-sdk/cmdline-tools/latest/bin/sdkmanager"; do
+              if [[ -x "${candidate}" ]]; then
+                sdkmanager_path="${candidate}"
+                break
+              fi
+            done
+          fi
+
+          if [[ -z "${sdkmanager_path}" || ! -x "${sdkmanager_path}" ]]; then
+            echo "Unable to locate the runner's preinstalled sdkmanager" >&2
+            exit 1
+          fi
+
+          sdk_root="$(cd "$(dirname "${sdkmanager_path}")/../../.." && pwd)"
+          {
+            echo "ANDROID_HOME=${sdk_root}"
+            echo "ANDROID_SDK_ROOT=${sdk_root}"
+            echo "PATH=${sdk_root}/cmdline-tools/latest/bin:${sdk_root}/platform-tools:${PATH}"
+          } >> "${GITHUB_ENV}"
+
+          echo "ANDROID_HOME=${sdk_root}" >> "${GITHUB_PATH}"
+          echo "${sdk_root}/cmdline-tools/latest/bin" >> "${GITHUB_PATH}"
+          echo "${sdk_root}/platform-tools" >> "${GITHUB_PATH}"
+
+      - name: Accept Android SDK licenses
+        shell: bash
+        run: |
+          set -o pipefail
+          set +e
+          yes | sdkmanager --licenses
+          pipe_status=("${PIPESTATUS[@]}")
+          set -e
+
+          # sdkmanager is authoritative; yes can exit non-zero when sdkmanager closes stdin.
+          if [[ "${pipe_status[1]}" -ne 0 ]]; then
+            printf 'SDK license acceptance failed (yes=%s, sdkmanager=%s)\n' "${pipe_status[0]}" "${pipe_status[1]}" >&2
+            exit 1
+          fi
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -o pipefail
+          sdkmanager "platforms;android-${ANDROID_API_LEVEL}" "build-tools;${ANDROID_BUILD_TOOLS}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Generate Capacitor Android files
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run build
+          rm -rf dist/client
+          mkdir -p dist/client
+          cp -R .output/public/. dist/client/
+          npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14

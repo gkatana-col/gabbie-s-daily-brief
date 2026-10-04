@@ -24,9 +24,19 @@
 
         </activity>
 
-        <receiver android:name=".BriefPeriodReceiver" android:exported="false" />
+        <receiver android:name=".BriefPeriodReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
 
-        <receiver android:name=".BriefWidgetProvider" android:exported="true" android:label="Brief">
+        <receiver
+            android:name=".BriefWidgetProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@drawable/ic_brief_logo"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -50,6 +60,7 @@
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>

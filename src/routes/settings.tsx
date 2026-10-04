@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageHeader } from "./today";
 import { BriefIcon, type BriefIconName } from "@/components/BriefIcon";
 import { useApp } from "@/features/i18n/I18nProvider";
@@ -18,7 +18,20 @@ export const Route = createFileRoute("/settings")({ component: SettingsPage, hea
 
 function SettingsPage() {
   const { t, user, setInterfaceLanguage, setBriefingLanguage, setTheme, setNotification } = useApp();
-  return <div><PageHeader title={t("settingsTitle")} subtitle={t("settingsSubtitle")} /><div className="space-y-5"><SettingsSection icon="language" title={t("language")}><SelectRow label={t("interfaceLanguage")} value={user.preferredLanguage} onValueChange={(value) => setInterfaceLanguage(value as LanguagePreference)} options={[["auto", t("automatic")], ["bg", t("bulgarian")], ["en", t("english")]]} /><SelectRow label={t("briefingLanguage")} value={user.briefingLanguage} onValueChange={(value) => setBriefingLanguage(value as User["briefingLanguage"])} options={[["same", t("sameAsInterface")], ["bg", t("bulgarian")], ["en", t("english")]]} /></SettingsSection><SettingsSection icon="theme" title={t("theme")} hint={t("appearanceHint")}><SelectRow label={t("theme")} value={user.theme} onValueChange={(value) => setTheme(value as ThemePreference)} options={[["system", t("system")], ["light", t("light")], ["dark", t("dark")]]} /></SettingsSection><SettingsSection icon="briefUpdates" title={t("notifications")} hint={t("notificationsHint")}><ToggleRow label={t("morningBriefing")} checked={user.notificationPreferences.morningBriefing} onCheckedChange={(value) => setNotification("morningBriefing", value)} /><ToggleRow label={t("importantUpdates")} checked={user.notificationPreferences.importantUpdates} onCheckedChange={(value) => setNotification("importantUpdates", value)} /><ToggleRow label={t("eveningRecap")} checked={user.notificationPreferences.eveningRecap} onCheckedChange={(value) => setNotification("eveningRecap", value)} /></SettingsSection><LiveNotificationTestSection /></div></div>;
+  const [widgetAppearance, setWidgetAppearance] = useState<"system" | "light" | "dark">("system");
+  const isNative = nativeBridge.isNativeApp();
+
+  useEffect(() => {
+    if (isNative) void nativeBridge.getWidgetAppearance().then(setWidgetAppearance).catch(() => undefined);
+  }, [isNative]);
+
+  const updateWidgetAppearance = (value: string) => {
+    const appearance = value as "system" | "light" | "dark";
+    setWidgetAppearance(appearance);
+    void nativeBridge.setWidgetAppearance(appearance).catch(() => undefined);
+  };
+
+  return <div className="settings-page"><PageHeader title={t("settingsTitle")} subtitle={t("settingsSubtitle")} /><div className="space-y-5"><SettingsSection icon="language" title={t("language")}><SelectRow label={t("interfaceLanguage")} value={user.preferredLanguage} onValueChange={(value) => setInterfaceLanguage(value as LanguagePreference)} options={[["auto", t("automatic")], ["bg", t("bulgarian")], ["en", t("english")]]} /><SelectRow label={t("briefingLanguage")} value={user.briefingLanguage} onValueChange={(value) => setBriefingLanguage(value as User["briefingLanguage"])} options={[["same", t("sameAsInterface")], ["bg", t("bulgarian")], ["en", t("english")]]} /></SettingsSection><SettingsSection icon="theme" title={t("theme")} hint={t("appearanceHint")}><SelectRow label={t("theme")} value={user.theme} onValueChange={(value) => setTheme(value as ThemePreference)} options={[["system", t("system")], ["light", t("light")], ["dark", t("dark")]]} /></SettingsSection>{isNative && <SettingsSection icon="brief" title="Външен вид на Widget-а" hint="Тази настройка променя само Brief Widget-а."><SelectRow label="Тема на Widget-а" value={widgetAppearance} onValueChange={updateWidgetAppearance} options={[["system", "Системен"], ["light", "Светъл"], ["dark", "Тъмен"]]} /></SettingsSection>}<SettingsSection icon="briefUpdates" title={t("notifications")} hint={t("notificationsHint")}><ToggleRow label={t("morningBriefing")} checked={user.notificationPreferences.morningBriefing} onCheckedChange={(value) => setNotification("morningBriefing", value)} /><ToggleRow label={t("importantUpdates")} checked={user.notificationPreferences.importantUpdates} onCheckedChange={(value) => setNotification("importantUpdates", value)} /><ToggleRow label={t("eveningRecap")} checked={user.notificationPreferences.eveningRecap} onCheckedChange={(value) => setNotification("eveningRecap", value)} /></SettingsSection><LiveNotificationTestSection /></div></div>;
 }
 
 /** Development/debug-only trigger for the native Live Notification POC. Hidden in production web builds. */

@@ -37,6 +37,8 @@ export interface NativeBridge {
   isNativeApp(): boolean;
   getPlatform(): Platform;
   getPlatformInfo(): Promise<PlatformInfo>;
+  getWidgetAppearance(): Promise<"system" | "light" | "dark">;
+  setWidgetAppearance(appearance: "system" | "light" | "dark"): Promise<void>;
   openExternalUrl(url: string): Promise<void>;
   requestPermission(permission: string): Promise<boolean>;
   getDeviceTimezone(): string;
@@ -49,6 +51,10 @@ export interface NativeBridge {
   startLiveNotification(content: LiveNotificationContent): Promise<LiveNotificationStatus>;
   updateLiveNotification(content: LiveNotificationContent): Promise<LiveNotificationStatus>;
   stopLiveNotification(): Promise<LiveNotificationStatus>;
+  /** Gets a fresh device location, requesting location permission only when weather needs it. */
+  getCurrentLocation(): Promise<{ latitude: number; longitude: number }>;
+  /** Reads the next active alarm already configured on the device; never creates or changes alarms. */
+  getNextAlarm(): Promise<{ triggerAt: string; time: string } | null>;
 }
 
 export interface NowBarAdapter {

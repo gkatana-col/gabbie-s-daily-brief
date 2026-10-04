@@ -20,11 +20,16 @@ final class BriefSchedule {
     private static final String PREFS = "brief_live";
     private BriefSchedule() {}
 
-    /** Same rule as the web time-of-day logic; 22–04 keeps the evening label (no Night Brief). */
+    /** The three active periods. Hours 22–04 are inactive; there is no Night Brief. */
     static String greeting(int h) {
         if (h >= 5 && h <= 10) return "Добро утро";
         if (h >= 11 && h <= 16) return "Добър ден";
-        return "Добър вечер";
+        if (h >= 17 && h <= 21) return "Добър вечер";
+        return null;
+    }
+
+    private static boolean isActiveHour(int hour) {
+        return hour >= 5 && hour <= 21;
     }
 
     static long nextBoundary(long now) {
@@ -49,23 +54,38 @@ final class BriefSchedule {
 
     static boolean isActive(Context ctx) { return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean("active", false); }
 
-    /** Called at each boundary: refresh greeting in the existing notification (if still active) and widgets. */
-    static void onBoundary(Context ctx) {
-        SharedPreferences p = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if (p.getBoolean("active", false)) {
-            String title = "Brief · " + greeting(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-            BriefLiveNotificationPlugin.repost(ctx, title, p.getString("text", ""), p.getInt("progress", 25));
-        }
+    static String widgetAppearance(Context ctx) {
+        return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString("widgetAppearance", "system");
+    }
+
+    static void setWidgetAppearance(Context ctx, String appearance) {
+        String value = "light".equals(appearance) || "dark".equals(appearance) ? appearance : "system";
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString("widgetAppearance", value).apply();
         BriefWidgetProvider.refreshAll(ctx);
-        schedule(ctx);
+    }
+
+    /** Applies the period transition while the app is backgrounded or closed. */
+    static void onBoundary(Context ctx) {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        SharedPreferences p = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+
+        if (!isActiveHour(hour)) {
+            BriefLiveNotificationPlugin.cancel(ctx);
+            setActive(ctx, false, null, null, 0);
+            return;
+        }
+
+        String title = "Brief · " + greeting(hour);
+        BriefLiveNotificationPlugin.repost(ctx, title, p.getString("text", ""), p.getInt("progress", 25));
+        setActive(ctx, true, title, p.getString("text", ""), p.getInt("progress", 25));
     }
 
     static void schedule(Context ctx) {
         try {
             AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
             PendingIntent pi = PendingIntent.getBroadcast(ctx, 0, new Intent(ctx, BriefPeriodReceiver.class), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-            // Inexact alarm: battery friendly and needs no SCHEDULE_EXACT_ALARM permission.
-            am.set(AlarmManager.RTC, nextBoundary(System.currentTimeMillis()), pi);
+            // Inexact, idle-tolerant alarm: battery friendly and needs no SCHEDULE_EXACT_ALARM permission.
+            am.setAndAllowWhileIdle(AlarmManager.RTC, nextBoundary(System.currentTimeMillis()), pi);
         } catch (Exception ignored) {}
     }
 
@@ -88,10 +108,26 @@ final class BriefSchedule {
         return null;
     }
 
-    static String nextAlarm(Context ctx) {
+    static Long nextAlarmTimestamp(Context ctx) {
         try {
             AlarmManager.AlarmClockInfo a = ((AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE)).getNextAlarmClock();
-            return a == null ? null : new SimpleDateFormat("HH:mm", Locale.getDefault()).format(a.getTriggerTime());
+            if (a == null || a.getTriggerTime() <= System.currentTimeMillis()) return null;
+            return a.getTriggerTime();
         } catch (Exception e) { return null; }
+    }
+
+    static String formatAlarmTime(long triggerAt) {
+        Calendar alarm = Calendar.getInstance();
+        alarm.setTimeInMillis(triggerAt);
+        Calendar today = Calendar.getInstance();
+        String pattern = alarm.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                && alarm.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
+                ? "HH:mm" : "dd.MM · HH:mm";
+        return new SimpleDateFormat(pattern, Locale.getDefault()).format(triggerAt);
+    }
+
+    static String nextAlarm(Context ctx) {
+        Long triggerAt = nextAlarmTimestamp(ctx);
+        return triggerAt == null ? null : formatAlarmTime(triggerAt);
     }
 }
