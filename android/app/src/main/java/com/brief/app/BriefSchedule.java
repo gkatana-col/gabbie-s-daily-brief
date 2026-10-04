@@ -74,8 +74,8 @@ final class BriefSchedule {
         try {
             AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
             PendingIntent pi = PendingIntent.getBroadcast(ctx, 0, new Intent(ctx, BriefPeriodReceiver.class), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-            // Inexact alarm: battery friendly and needs no SCHEDULE_EXACT_ALARM permission.
-            am.set(AlarmManager.RTC, nextBoundary(System.currentTimeMillis()), pi);
+            // Inexact, idle-tolerant alarm: battery friendly and needs no SCHEDULE_EXACT_ALARM permission.
+            am.setAndAllowWhileIdle(AlarmManager.RTC, nextBoundary(System.currentTimeMillis()), pi);
         } catch (Exception ignored) {}
     }
 
