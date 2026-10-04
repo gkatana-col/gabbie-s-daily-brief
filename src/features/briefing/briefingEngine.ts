@@ -150,6 +150,7 @@ function buildBriefing(input: BriefingInput): Briefing {
     high: input.weather.high,
     low: input.weather.low,
     location: translate(input.weather.location, language),
+    ...(input.weather.unit ? { unit: input.weather.unit } : {}),
   } : {
     available: false,
     summary: isBg ? "Няма налични данни за времето." : "Weather data is unavailable.",
