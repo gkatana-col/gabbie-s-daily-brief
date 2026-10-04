@@ -285,6 +285,42 @@
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 
+/* News and Settings use a local Cyrillic-safe stack so these surfaces remain readable even when web fonts are unavailable. */
+.discover-page,
+.settings-page {
+  font-family: Arial, "Noto Sans", sans-serif;
+  color: var(--foreground);
+}
+
+.discover-page :where(.font-display, h1, h2, h3, button, a, time, span, p),
+.settings-page :where(.font-display, h1, h2, h3, button, a, label, p, span) {
+  font-family: Arial, "Noto Sans", sans-serif;
+}
+
+.discover-page :where(.text-muted-foreground, .discover-summary, .discover-source, .discover-ai, .discover-important, .discover-banner),
+.settings-page :where(.text-muted-foreground) {
+  color: color-mix(in oklab, var(--foreground) 72%, var(--background)) !important;
+  opacity: 1;
+}
+
+.discover-page :where(.discover-headline, .discover-banner .font-semibold),
+.settings-page :where(h1, h2, label, button, [role="switch"], [role="combobox"]) {
+  color: var(--foreground);
+}
+
+.discover-page :where(.discover-tab, .discover-icon-btn, .discover-back),
+.settings-page :where(.icon-well, svg) {
+  color: color-mix(in oklab, var(--foreground) 84%, var(--primary));
+}
+
+.settings-page :where(.brief-card) {
+  color: var(--foreground);
+}
+
+.settings-page :where(.brief-card .text-muted-foreground) {
+  color: color-mix(in oklab, var(--foreground) 72%, var(--background)) !important;
+}
+
 /* Discover */
 @utility discover-tabs { display: flex; gap: .4rem; margin: 0 -1rem; overflow-x: auto; padding: .15rem 1rem .35rem; scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
 @utility discover-tab { flex-shrink: 0; border: 1px solid color-mix(in oklab, var(--border) 80%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--card) 70%, transparent); padding: .45rem .8rem; color: var(--muted-foreground); font-size: .78rem; font-weight: 500; transition: background .18s ease, color .18s ease; }

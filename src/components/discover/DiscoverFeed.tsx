@@ -21,7 +21,7 @@ export function DiscoverFeed() {
   const visible = devState === "empty" ? [] : (category === "all" ? stories : stories.filter((s) => s.category === category)).slice(0, FEED_LIMIT);
 
   return (
-    <div>
+    <div className="discover-page">
       <header className="mb-5 pt-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
