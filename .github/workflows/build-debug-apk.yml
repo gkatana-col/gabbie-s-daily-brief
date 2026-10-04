@@ -25,11 +25,12 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK components
-        run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+        with:
+          accept-android-sdk-licenses: true
+          packages: |-
+            platform-tools
+            platforms;android-36
+            build-tools;36.0.0
 
       - name: Install web dependencies
         run: npm ci
