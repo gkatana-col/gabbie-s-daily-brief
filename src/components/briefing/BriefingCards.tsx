@@ -44,7 +44,7 @@ export function CalendarCard({ briefing, expanded = false }: { briefing: Briefin
 }
 
 export function WeatherCard({ briefing }: { briefing: Briefing }) {
-  const { t } = useApp();
+  const { t, briefingLanguage: language } = useApp();
   const { status } = useSyncExternalStore(subscribeWeather, getWeatherState, getWeatherState);
   if (!briefing.weather.available) {
     const message = status === "loading" || status === "idle" ? t("weatherLoading") : status === "permission_denied" ? t("weatherPermissionDenied") : briefing.weather.summary;
