@@ -10,6 +10,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(BriefCalendarPlugin.class);
         registerPlugin(BriefLiveNotificationPlugin.class);
         registerPlugin(BriefLocationPlugin.class);
+    registerPlugin(BriefAlarmPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

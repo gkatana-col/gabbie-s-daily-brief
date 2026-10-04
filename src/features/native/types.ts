@@ -51,6 +51,8 @@ export interface NativeBridge {
   stopLiveNotification(): Promise<LiveNotificationStatus>;
   /** Gets a fresh device location, requesting location permission only when weather needs it. */
   getCurrentLocation(): Promise<{ latitude: number; longitude: number }>;
+  /** Reads the next active alarm already configured on the device; never creates or changes alarms. */
+  getNextAlarm(): Promise<{ triggerAt: string; time: string } | null>;
 }
 
 export interface NowBarAdapter {

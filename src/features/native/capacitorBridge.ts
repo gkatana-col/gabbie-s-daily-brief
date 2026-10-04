@@ -11,8 +11,12 @@ interface BriefPlatformPlugin {
 interface BriefLocationPlugin {
   getCurrentLocation(): Promise<{ latitude: number; longitude: number }>;
 }
+interface BriefAlarmPlugin {
+  getNextAlarm(): Promise<{ triggerAt: string; time: string } | null>;
+}
 const BriefPlatform = registerPlugin<BriefPlatformPlugin>("BriefPlatform");
 const BriefLocation = registerPlugin<BriefLocationPlugin>("BriefLocation");
+const BriefAlarm = registerPlugin<BriefAlarmPlugin>("BriefAlarm");
 
 /** Capacitor-backed bridge. Only capabilities that really exist natively are forwarded; the rest keep the safe web behaviour. */
 export function createCapacitorBridge(): NativeBridge {
@@ -25,6 +29,10 @@ export function createCapacitorBridge(): NativeBridge {
     getCurrentLocation: async () => {
       if (platform !== "android" || !Capacitor.isPluginAvailable("BriefLocation")) throw new Error("location_unsupported");
       return BriefLocation.getCurrentLocation();
+    },
+    getNextAlarm: async () => {
+      if (platform !== "android" || !Capacitor.isPluginAvailable("BriefAlarm")) return null;
+      return BriefAlarm.getNextAlarm();
     },
     async getPlatformInfo(): Promise<PlatformInfo> {
       const base: PlatformInfo = { ...webPlatformInfo, platform, native: true, capacitor: true };

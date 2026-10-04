@@ -24,6 +24,7 @@ export const webNativeBridge: NativeBridge = {
   updateLiveNotification: async () => "unsupported",
   stopLiveNotification: async () => "unsupported",
   getCurrentLocation: async () => { throw new Error("location_unsupported"); },
+  getNextAlarm: async () => null,
 };
 
 let activeBridge: NativeBridge = webNativeBridge;
@@ -46,4 +47,5 @@ export const nativeBridge: NativeBridge = {
   startLiveNotification: (c) => activeBridge.startLiveNotification(c).catch(() => "error" as const),
   updateLiveNotification: (c) => activeBridge.updateLiveNotification(c).catch(() => "error" as const),
   stopLiveNotification: () => activeBridge.stopLiveNotification().catch(() => "error" as const),
+  getNextAlarm: () => activeBridge.getNextAlarm().catch(() => null),
 };

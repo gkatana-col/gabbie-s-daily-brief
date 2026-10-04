@@ -98,10 +98,26 @@ final class BriefSchedule {
         return null;
     }
 
-    static String nextAlarm(Context ctx) {
+    static Long nextAlarmTimestamp(Context ctx) {
         try {
             AlarmManager.AlarmClockInfo a = ((AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE)).getNextAlarmClock();
-            return a == null ? null : new SimpleDateFormat("HH:mm", Locale.getDefault()).format(a.getTriggerTime());
+            if (a == null || a.getTriggerTime() <= System.currentTimeMillis()) return null;
+            return a.getTriggerTime();
         } catch (Exception e) { return null; }
+    }
+
+    static String formatAlarmTime(long triggerAt) {
+        Calendar alarm = Calendar.getInstance();
+        alarm.setTimeInMillis(triggerAt);
+        Calendar today = Calendar.getInstance();
+        String pattern = alarm.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                && alarm.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
+                ? "HH:mm" : "dd.MM · HH:mm";
+        return new SimpleDateFormat(pattern, Locale.getDefault()).format(triggerAt);
+    }
+
+    static String nextAlarm(Context ctx) {
+        Long triggerAt = nextAlarmTimestamp(ctx);
+        return triggerAt == null ? null : formatAlarmTime(triggerAt);
     }
 }
