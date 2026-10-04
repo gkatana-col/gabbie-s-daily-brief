@@ -86,6 +86,19 @@ jobs:
           set -o pipefail
           sdkmanager "platforms;android-${ANDROID_API_LEVEL}" "build-tools;${ANDROID_BUILD_TOOLS}"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Generate Capacitor Android files
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npx cap sync android
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
