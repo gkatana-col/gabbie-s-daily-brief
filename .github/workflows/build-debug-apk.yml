@@ -154,7 +154,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
           echo "Build output:"
+          find dist -maxdepth 3 -type f | sort | head -100 || true
           find .output/public -maxdepth 3 -type f | sort | head -100
 
           echo "Capacitor webDir:"
@@ -164,6 +166,8 @@ jobs:
             echo "ERROR: npm run build did not produce .output/public/index.html." >&2
             exit 1
           }
+
+          echo "Verified: .output/public/index.html exists."
 
       - name: Sync Capacitor Android project
         run: npx cap sync android
