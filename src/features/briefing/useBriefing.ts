@@ -14,7 +14,9 @@ import type { BriefingInput, BriefingType } from "./types";
 
 /** Replaces mock calendar events with real device events only when native access is granted and returned events. */
 export function applyNativeCalendar(input: BriefingInput, nativeCalendar: Pick<NativeCalendarState, "status" | "items">): BriefingInput {
-  if (nativeCalendar.status !== "ok" || nativeCalendar.items.length === 0) return input;
+  // Browser keeps demo data; on the device only real events are shown (none when denied/empty, never mock).
+  if (nativeCalendar.status === "web") return input;
+  if (nativeCalendar.status !== "ok") return { ...input, calendarEvents: [] };
   // CalendarEvent stores only user-defined importance ("critical" is engine-computed), so map it down; the engine re-scores anyway.
   return { ...input, calendarEvents: nativeCalendar.items.map(({ importance, ...item }) => ({ ...item, importance: importance === "critical" ? "high" as const : importance })) };
 }
