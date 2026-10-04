@@ -74,8 +74,8 @@ jobs:
           pipe_status=("${PIPESTATUS[@]}")
           set -e
 
-          # sdkmanager exits successfully after accepting all licenses; yes may receive SIGPIPE.
-          if [[ "${pipe_status[1]}" -ne 0 || ( "${pipe_status[0]}" -ne 0 && "${pipe_status[0]}" -ne 141 ) ]]; then
+          # sdkmanager is authoritative; yes can exit non-zero when sdkmanager closes stdin.
+          if [[ "${pipe_status[1]}" -ne 0 ]]; then
             printf 'SDK license acceptance failed (yes=%s, sdkmanager=%s)\n' "${pipe_status[0]}" "${pipe_status[1]}" >&2
             exit 1
           fi
