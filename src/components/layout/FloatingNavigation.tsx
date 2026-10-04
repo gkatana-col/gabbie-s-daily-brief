@@ -78,11 +78,11 @@ function getAtmosphericTextColors(sky: { top: string; middle: string; horizon: s
   const foregroundAmount = lightTextAmount;
   const adaptive = (dark: SkyColor, light: SkyColor) => rgb(interpolateColor(dark, light, foregroundAmount));
   return {
-    foreground: adaptive([20, 27, 39], [248, 250, 252]),
-    muted: adaptive([67, 78, 94], [205, 216, 230]),
-    primary: adaptive([15, 74, 116], [222, 241, 255]),
-    border: adaptive([18, 41, 68], [255, 255, 255]),
-    textShadow: lightTextAmount > 0.52 ? "rgba(5, 18, 38, .42)" : "rgba(255, 255, 255, .42)",
+    foreground: adaptive([12, 20, 32], [250, 252, 255]),
+    muted: adaptive([35, 47, 64], [232, 240, 248]),
+    primary: adaptive([8, 61, 105], [230, 246, 255]),
+    border: adaptive([14, 35, 62], [255, 255, 255]),
+    textShadow: lightTextAmount > 0.52 ? "rgba(3, 13, 28, .58)" : "rgba(255, 255, 255, .58)",
   };
 }
 
