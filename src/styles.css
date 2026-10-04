@@ -193,6 +193,38 @@
 .brief-page .brief-section article:first-child { padding-top: 0; }
 .brief-page .priority-row { min-height: 3.25rem; padding-left: 0; padding-right: 0; }
 .editorial-section { border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent); padding-top: 1.4rem; }
+
+/* Now Brief composition: one editorial surface, with content separated by rhythm rather than cards. */
+.brief-page { display: block; max-width: 44rem; margin: 0 auto; }
+.brief-greeting { padding: .25rem 0 3.5rem; }
+.brief-greeting-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brief-wordmark { color: var(--muted-foreground); font-size: .66rem; font-weight: 700; letter-spacing: .22em; }
+.brief-date { margin-top: 4.5rem; color: var(--muted-foreground); font-size: .76rem; font-weight: 600; text-transform: capitalize; }
+.brief-greeting h1 { margin-top: .7rem; max-width: 30rem; font-family: var(--font-display); font-size: clamp(2.35rem, 9vw, 4.8rem); font-weight: 600; letter-spacing: -.065em; line-height: .98; }
+.brief-greeting-intro { margin-top: 1.25rem; max-width: 27rem; color: var(--muted-foreground); font-size: 1rem; line-height: 1.55; }
+.brief-section { border-top: 1px solid color-mix(in oklab, var(--border) 62%, transparent); padding: 2.15rem 0; }
+.brief-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.45rem; }
+.brief-section-heading h2 { font-family: var(--font-display); font-size: .78rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.brief-section-heading span { color: var(--muted-foreground); font-size: .7rem; font-weight: 600; }
+.brief-page .summary-card { border-top: 0; padding: 0 0 3.25rem; }
+.brief-page .summary-card h2 { max-width: 36rem; margin-bottom: .85rem; font-family: var(--font-display); font-size: clamp(1.65rem, 5vw, 2.6rem); font-weight: 600; letter-spacing: -.045em; line-height: 1.08; }
+.brief-page .summary-card > p { max-width: 38rem; color: var(--muted-foreground); font-size: 1rem; line-height: 1.7; }
+.brief-kicker { display: block; margin-bottom: 1rem; color: var(--primary); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.brief-next-up, .brief-supporting { display: contents; }
+.brief-next-up .brief-section:first-child { padding-top: 2.25rem; }
+.brief-supporting .brief-section { padding-top: 2rem; padding-bottom: 2rem; }
+.brief-page .priority-row { min-height: 3.4rem; padding: .55rem 0; border-bottom: 1px solid color-mix(in oklab, var(--border) 42%, transparent); }
+.brief-page .priority-row:last-child { border-bottom: 0; }
+.priority-index { display: grid; width: 1.45rem; height: 1.45rem; flex-shrink: 0; place-items: center; color: var(--muted-foreground); font-size: .7rem; font-weight: 700; }
+.brief-page .brief-section article { padding: 1.35rem 0; }
+.brief-page .brief-section article h3 { font-family: var(--font-display); font-size: 1.04rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.35; }
+.brief-page .brief-section article:first-child { padding-top: 0; }
+.brief-page .brief-section article:last-child { padding-bottom: 0; }
+.brief-page .brief-section article p:last-child { color: var(--muted-foreground); }
+.brief-page .weather-card .brief-section-heading { margin-bottom: 1rem; }
+.brief-page .dynamic-pill { border-color: color-mix(in oklab, var(--foreground) 16%, transparent); background: color-mix(in oklab, var(--card) 32%, transparent); color: var(--foreground); }
+@media (min-width: 700px) { .brief-page { padding-top: 1.5rem; } .brief-greeting { padding-bottom: 4.5rem; } .brief-date { margin-top: 7rem; } }
+@media (prefers-color-scheme: dark) { .brief-page .summary-card > p, .brief-greeting-intro { color: color-mix(in oklab, var(--foreground) 66%, transparent); } }
 @media (min-width: 700px) {
   .brief-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3rem; }
   .brief-grid > .brief-section:nth-child(2) { border-top-color: color-mix(in oklab, var(--border) 58%, transparent); }

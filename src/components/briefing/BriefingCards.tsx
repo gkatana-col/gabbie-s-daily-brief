@@ -10,26 +10,26 @@ import { cn } from "@/lib/utils";
 function CardShell({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <section className={cn("brief-section", className)}>{children}</section>;
 }
-function CardHeading({ icon, title, action }: { icon: BriefIconName; title: string; action?: string | undefined }) {
-  return <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3"><div className="flex min-w-0 items-center gap-2.5"><span className="icon-well"><BriefIcon name={icon} /></span><h2 className="truncate font-display text-[15px] font-semibold">{title}</h2></div>{action && <span className="text-xs font-medium text-muted-foreground">{action}</span>}</div>;
+function CardHeading({ icon: _icon, title, action }: { icon: BriefIconName; title: string; action?: string | undefined }) {
+  return <div className="brief-section-heading"><h2>{title}</h2>{action && <span>{action}</span>}</div>;
 }
 
 export function GreetingCard({ briefing, onPillClick }: { briefing: Briefing; onPillClick: () => void }) {
   const { t, language } = useApp();
   const date = new Intl.DateTimeFormat(language === "bg" ? "bg-BG" : "en-GB", { weekday: "long", day: "numeric", month: "long" }).format(new Date(briefing.generatedAt));
   const periodIcon = briefing.type === "morning" ? "morning" : "evening";
-  return <section className="relative overflow-hidden px-1 pt-2"><div className="mb-7 flex items-center justify-between gap-3"><div className="brand-mark"><BriefIcon name="brand" /></div><Button variant="ghost" className="dynamic-pill h-auto max-w-[min(78vw,18rem)] whitespace-normal text-right" onClick={onPillClick} aria-label={briefing.type === "morning" ? t("showEvening") : t("showMorning")}><BriefIcon name={periodIcon} size={14} /><span>{briefing.type === "morning" ? t("morningPill") : t("eveningPill")}</span></Button></div><p className="mb-2 text-sm font-medium capitalize text-muted-foreground">{date}</p><h1 className="flex items-center gap-2 font-display text-[34px] font-semibold leading-tight text-foreground sm:text-4xl"><span>{briefing.greeting}</span><BriefIcon className="shrink-0 text-primary" name={periodIcon} size={28} strokeWidth={1.65} /></h1><p className="mt-3 max-w-xl text-[17px] leading-7 text-muted-foreground">{t("greetingIntro")}</p></section>;
+  return <section className="brief-greeting"><div className="brief-greeting-top"><p className="brief-wordmark">BRIEF</p><Button variant="ghost" className="dynamic-pill h-auto max-w-[min(78vw,18rem)] whitespace-normal text-right" onClick={onPillClick} aria-label={briefing.type === "morning" ? t("showEvening") : t("showMorning")}><span>{briefing.type === "morning" ? t("morningPill") : t("eveningPill")}</span></Button></div><p className="brief-date">{date}</p><h1>{briefing.greeting}</h1><p className="brief-greeting-intro">{t("greetingIntro")}</p></section>;
 }
 
 export function DailySummaryCard({ briefing }: { briefing: Briefing }) {
   const { t } = useApp();
-  return <CardShell className="summary-card"><div className="mb-5 flex items-center justify-between"><span className="eyebrow"><BriefIcon name="aiInsight" size={13} />{briefing.type === "morning" ? t("morningBrief") : t("eveningBrief")}</span><span className="text-xs text-muted-foreground">{t("generatedNow")}</span></div><h2 className="mb-3 font-display text-xl font-semibold">{t("dailySummary")}</h2><p className="text-[15px] leading-7 text-card-foreground/80">{briefing.summary}</p></CardShell>;
+  return <CardShell className="summary-card"><div className="mb-5 flex items-center justify-between"><span className="brief-kicker">{briefing.type === "morning" ? t("morningBrief") : t("eveningBrief")}</span><span className="text-xs text-muted-foreground">{t("generatedNow")}</span></div><h2 className="mb-3 font-display text-xl font-semibold">{t("dailySummary")}</h2><p className="text-[15px] leading-7 text-card-foreground/80">{briefing.summary}</p></CardShell>;
 }
 
 export function PriorityCard({ briefing }: { briefing: Briefing }) {
   const { t } = useApp();
   const items = briefing.type === "evening" ? briefing.unfinishedItems : briefing.priorities;
-  return <CardShell><CardHeading icon="important" title={t("importantToday")} action={`${items.length}`} /><div className="space-y-1">{items.map((item) => <div className="priority-row" key={item.id}><span className="priority-icon"><BriefIcon name={item.source === "calendar" ? "calendar" : "task"} size={15} /></span><div className="min-w-0 flex-1"><p className="font-medium leading-5">{item.title}</p>{item.time && <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><BriefIcon name="time" size={12} />{item.time}</p>}</div></div>)}</div></CardShell>;
+  return <CardShell><CardHeading icon="important" title={t("importantToday")} action={`${items.length}`} /><div className="space-y-1">{items.map((item) => <div className="priority-row" key={item.id}><span className="priority-index" aria-hidden="true">{items.indexOf(item) + 1}</span><div className="min-w-0 flex-1"><p className="font-medium leading-5">{item.title}</p>{item.time && <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><BriefIcon name="time" size={12} />{item.time}</p>}</div></div>)}</div></CardShell>;
 }
 
 export function CalendarCard({ briefing, expanded = false }: { briefing: Briefing; expanded?: boolean }) {
@@ -56,7 +56,7 @@ export function WeatherCard({ briefing }: { briefing: Briefing }) {
 export function NewsCard({ briefing, expanded = false }: { briefing: Briefing; expanded?: boolean }) {
   const { t } = useApp();
   const items = expanded ? briefing.news : briefing.news.slice(0, 2);
-  return <CardShell><CardHeading icon="news" title={t("selectedNews")} /><div className="divide-y divide-border">{items.map((item) => <article className="group grid grid-cols-[minmax(0,1fr)_auto] gap-3 py-4 first:pt-0 last:pb-0" key={item.id}><div className="min-w-0"><p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-primary"><BriefIcon name={item.category === "Фокус" || item.category === "Focus" ? "aiInsight" : "news"} size={12} />{item.category}</p><h3 className="text-[15px] font-medium leading-6">{item.title}</h3><p className="mt-2 text-xs text-muted-foreground">{item.source}</p></div><BriefIcon className="mt-1 shrink-0 text-muted-foreground" name="externalLink" size={16} /></article>)}</div></CardShell>;
+  return <CardShell><CardHeading icon="news" title={t("selectedNews")} /><div className="divide-y divide-border">{items.map((item) => <article className="group grid grid-cols-[minmax(0,1fr)_auto] gap-3 py-4 first:pt-0 last:pb-0" key={item.id}><div className="min-w-0"><p className="mb-1.5 text-xs font-medium text-primary">{item.category}</p><h3 className="text-[15px] font-medium leading-6">{item.title}</h3><p className="mt-2 text-xs text-muted-foreground">{item.source}</p></div><BriefIcon className="mt-1 shrink-0 text-muted-foreground" name="externalLink" size={16} /></article>)}</div></CardShell>;
 }
 
 export function InsightCard({ briefing }: { briefing: Briefing }) {
