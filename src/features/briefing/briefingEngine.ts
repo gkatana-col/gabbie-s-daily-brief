@@ -33,14 +33,24 @@ const formatTime = (value: string, language: ResolvedLanguage, timeZone: string)
 
 const plural = (count: number, singular: string, pluralForm: string) => count === 1 ? singular : pluralForm;
 
-// Time-of-day greeting from the device's LOCAL hour:
-// 05:00–10:59 morning, 11:00–16:59 midday, 17:00–21:59 evening, 22:00–04:59 night.
-export function getTimeOfDayGreeting(hour: number, language: ResolvedLanguage): string {
+// Time-of-day state from the device's LOCAL hour:
+  // 05:00–10:59 morning, 11:00–16:59 midday, 17:00–21:59 evening, 22:00–04:59 night.
+  export type TimeOfDay = "morning" | "midday" | "evening" | "night";
+
+  export function getTimeOfDay(hour: number): TimeOfDay {
+  if (hour >= 5 && hour < 11) return "morning";
+  if (hour >= 11 && hour < 17) return "midday";
+  if (hour >= 17 && hour < 22) return "evening";
+  return "night";
+  }
+
+  export function getTimeOfDayGreeting(hour: number, language: ResolvedLanguage): string {
   const isBg = language === "bg";
-  if (hour >= 5 && hour <= 10) return isBg ? "Добро утро" : "Good morning";
-  if (hour >= 11 && hour <= 16) return isBg ? "Добър ден" : "Good afternoon";
+  const period = getTimeOfDay(hour);
+  if (period === "morning") return isBg ? "Добро утро" : "Good morning";
+  if (period === "midday") return isBg ? "Добър ден" : "Good afternoon";
   return isBg ? "Добър вечер" : "Good evening"; // evening and night
-}
+  }
 
 export function calculateImportance(item: ImportanceItem, currentDateTime = new Date().toISOString()): ImportanceLevel {
   let score = item.importance ? explicitImportance[item.importance] : 1;
@@ -159,7 +169,7 @@ function buildBriefing(input: BriefingInput): Briefing {
   let summary: string;
   if (briefingType === "morning") {
     if (!todayEvents.length && !relevantTasks.length) summary = isBg ? "Нямаш записани събития или задачи за днес." : "You have no events or tasks scheduled for today.";
-    else if (isBg) summary = `Днес имаш ${todayEvents.length} ${plural(todayEvents.length, "ангажимент", "ангажимента")} и ${relevantTasks.length} ${plural(relevantTasks.length, "задача", "задачи")}.`;
+    else if (isBg) summary = `Днес ��маш ${todayEvents.length} ${plural(todayEvents.length, "ангажимент", "ангажимента")} и ${relevantTasks.length} ${plural(relevantTasks.length, "задача", "задачи")}.`;
     else summary = `Today you have ${todayEvents.length} ${plural(todayEvents.length, "event", "events")} and ${relevantTasks.length} ${plural(relevantTasks.length, "task", "tasks")}.`;
   } else {
     const total = completedItems.length + unfinishedItems.length;

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { getTimeOfDay, type TimeOfDay } from "@/features/briefing/briefingEngine";
 import { BriefIcon, type BriefIconName } from "@/components/BriefIcon";
 import { useApp } from "@/features/i18n/I18nProvider";
 
@@ -48,14 +49,23 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
   return <>{(pull > 0 || refreshing) && <div className="pull-indicator" style={{ opacity: Math.min(1, pull / 46), transform: `translate(-50%, ${Math.min(18, pull / 3)}px)` }}><BriefIcon name="refresh" size={16} className={refreshing ? "animate-spin" : ""} /><span>{refreshing ? "Обновяване" : "Издърпай за обновяване"}</span></div>}{children}</>;
 }
 
-export function getAtmosphere(hour = new Date().getHours()) {
-  if (hour >= 5 && hour < 11) return "morning";
-  if (hour >= 11 && hour < 17) return "midday";
-  if (hour >= 17 && hour < 22) return "evening";
-  return "night";
+export function getAtmosphere(hour = new Date().getHours()): TimeOfDay {
+  return getTimeOfDay(hour);
 }
 
 export function AtmosphereShell({ children }: { children: React.ReactNode }) {
-  return <div className={`app-atmosphere atmosphere-${getAtmosphere()}`}><PullToRefresh>{children}</PullToRefresh></div>;
+  const [period, setPeriod] = useState<TimeOfDay>(() => getAtmosphere());
+
+  useEffect(() => {
+    const updatePeriod = () => setPeriod(getAtmosphere());
+    const interval = window.setInterval(updatePeriod, 60_000);
+    window.addEventListener("focus", updatePeriod);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("focus", updatePeriod);
+    };
+  }, []);
+
+  return <div className={`app-atmosphere atmosphere-${period}`}><PullToRefresh>{children}</PullToRefresh></div>;
 }
 
