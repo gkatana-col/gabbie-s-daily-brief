@@ -349,8 +349,8 @@
 /* Theme-aware Liquid Glass surfaces for News and Settings only. */
 .discover-page,
 .settings-page {
-  --surface-glass: color-mix(in oklab, var(--card) 62%, transparent);
-  --surface-glass-strong: color-mix(in oklab, var(--card) 76%, transparent);
+  --surface-glass: color-mix(in oklab, var(--card) 72%, transparent);
+  --surface-glass-strong: color-mix(in oklab, var(--card) 84%, transparent);
   --surface-edge: color-mix(in oklab, var(--foreground) 14%, transparent);
   --surface-shadow: color-mix(in oklab, var(--background) 34%, transparent);
 }
@@ -407,8 +407,8 @@
 
 .dark .discover-page,
 .dark .settings-page {
-  --surface-glass: color-mix(in oklab, oklch(0.16 0.04 255) 72%, transparent);
-  --surface-glass-strong: color-mix(in oklab, oklch(0.2 0.05 255) 82%, transparent);
+  --surface-glass: color-mix(in oklab, oklch(0.18 0.04 255) 72%, transparent);
+  --surface-glass-strong: color-mix(in oklab, oklch(0.22 0.05 255) 82%, transparent);
   --surface-edge: oklch(0.94 0.018 220 / 16%);
   --surface-shadow: oklch(0.04 0.03 255 / 0.34);
 }
