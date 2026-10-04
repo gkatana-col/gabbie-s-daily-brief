@@ -48,12 +48,47 @@ jobs:
             exit 1
           fi
 
-          yes | "$SDKMANAGER" --licenses >/dev/null
-          "$SDKMANAGER" --install \
-            platform-tools \
-            'platforms;android-36' \
-            'build-tools;36.0.0' \
-            </dev/null
+          echo "Android SDK location before fallback: $ANDROID_HOME"
+          echo "Installed Android SDK packages before fallback:"
+          "$SDKMANAGER" --list_installed
+
+          # Feed licenses non-interactively; never wait for terminal input in CI.
+          yes | timeout 120 "$SDKMANAGER" --licenses >/dev/null
+
+          required_packages=(
+            "platform-tools"
+            "platforms;android-36"
+            "build-tools;36.0.0"
+          )
+          installed_packages="$($SDKMANAGER --list_installed)"
+          missing_packages=()
+          for package in "${required_packages[@]}"; do
+            if ! grep -Fq "${package} |" <<< "$installed_packages"; then
+              missing_packages+=("$package")
+            fi
+          done
+
+          if ((${#missing_packages[@]} > 0)); then
+            echo "Installing missing Android SDK packages: ${missing_packages[*]}"
+            if ! "$SDKMANAGER" --install "${missing_packages[@]}" </dev/null; then
+              echo "Android SDK installation failed for: ${missing_packages[*]}" >&2
+              exit 1
+            fi
+          else
+            echo "All required Android SDK packages are already installed; reusing them."
+          fi
+
+          echo "Android SDK location after fallback: $ANDROID_HOME"
+          echo "Installed Android SDK packages after fallback:"
+          "$SDKMANAGER" --list_installed
+
+          final_packages="$($SDKMANAGER --list_installed)"
+          for package in "${required_packages[@]}"; do
+            if ! grep -Fq "${package} |" <<< "$final_packages"; then
+              echo "Required Android SDK package is unavailable after setup: $package" >&2
+              exit 1
+            fi
+          done
 
       - name: Diagnose Android SDK
         shell: bash
