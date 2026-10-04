@@ -31,7 +31,39 @@ jobs:
           cache: gradle
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sdkmanager_path="$(command -v sdkmanager || true)"
+          if [[ -z "${sdkmanager_path}" ]]; then
+            for candidate in \
+              "${ANDROID_HOME:-}/cmdline-tools/latest/bin/sdkmanager" \
+              "${ANDROID_SDK_ROOT:-}/cmdline-tools/latest/bin/sdkmanager" \
+              "/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" \
+              "/opt/android-sdk/cmdline-tools/latest/bin/sdkmanager"; do
+              if [[ -x "${candidate}" ]]; then
+                sdkmanager_path="${candidate}"
+                break
+              fi
+            done
+          fi
+
+          if [[ -z "${sdkmanager_path}" || ! -x "${sdkmanager_path}" ]]; then
+            echo "Unable to locate the runner's preinstalled sdkmanager" >&2
+            exit 1
+          fi
+
+          sdk_root="$(cd "$(dirname "${sdkmanager_path}")/../.." && pwd)"
+          {
+            echo "ANDROID_HOME=${sdk_root}"
+            echo "ANDROID_SDK_ROOT=${sdk_root}"
+            echo "PATH=${sdk_root}/cmdline-tools/latest/bin:${sdk_root}/platform-tools:${PATH}"
+          } >> "${GITHUB_ENV}"
+
+          echo "ANDROID_HOME=${sdk_root}" >> "${GITHUB_PATH}"
+          echo "${sdk_root}/cmdline-tools/latest/bin" >> "${GITHUB_PATH}"
+          echo "${sdk_root}/platform-tools" >> "${GITHUB_PATH}"
 
       - name: Accept Android SDK licenses
         shell: bash
@@ -40,7 +72,10 @@ jobs:
           yes | sdkmanager --licenses
 
       - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-${ANDROID_API_LEVEL}" "build-tools;${ANDROID_BUILD_TOOLS}"
+        shell: bash
+        run: |
+          set -o pipefail
+          sdkmanager "platforms;android-${ANDROID_API_LEVEL}" "build-tools;${ANDROID_BUILD_TOOLS}"
 
       - name: Build debug APK
         working-directory: android
