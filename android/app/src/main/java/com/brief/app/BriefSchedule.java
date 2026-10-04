@@ -20,12 +20,15 @@ final class BriefSchedule {
     private static final String PREFS = "brief_live";
     private BriefSchedule() {}
 
-    /** Same rule as the web time-of-day logic; 22–04 keeps the evening label (no Night Brief). */
+    /** Same rule as the web time-of-day logic. There is no Brief during 22:00–04:59. */
     static String greeting(int h) {
         if (h >= 5 && h <= 10) return "Добро утро";
         if (h >= 11 && h <= 16) return "Добър ден";
-        return "Добър вечер";
+        if (h >= 17 && h <= 21) return "Добър вечер";
+        return "";
     }
+
+    static boolean isActiveHour(int h) { return h >= 5 && h <= 21; }
 
     static long nextBoundary(long now) {
         Calendar c = Calendar.getInstance();
@@ -49,12 +52,17 @@ final class BriefSchedule {
 
     static boolean isActive(Context ctx) { return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean("active", false); }
 
-    /** Called at each boundary: refresh greeting in the existing notification (if still active) and widgets. */
+    /** Called at each boundary: end the Brief at night and repost it when the next active period starts. */
     static void onBoundary(Context ctx) {
         SharedPreferences p = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if (p.getBoolean("active", false)) {
-            String title = "Brief · " + greeting(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (!isActiveHour(hour)) {
+            BriefLiveNotificationPlugin.cancel(ctx);
+            p.edit().putBoolean("active", false).apply();
+        } else if (p.getString("text", null) != null) {
+            String title = "Brief · " + greeting(hour);
             BriefLiveNotificationPlugin.repost(ctx, title, p.getString("text", ""), p.getInt("progress", 25));
+            p.edit().putBoolean("active", true).apply();
         }
         BriefWidgetProvider.refreshAll(ctx);
         schedule(ctx);
@@ -81,8 +89,14 @@ final class BriefSchedule {
             while (c != null && c.moveToNext()) {
                 long begin = c.getLong(1);
                 if (begin < now && c.getInt(2) != 1) continue;
+                Calendar eventDate = Calendar.getInstance();
+                eventDate.setTimeInMillis(begin);
+                Calendar today = Calendar.getInstance();
+                boolean tomorrow = eventDate.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                    && eventDate.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR) + 1;
+                String prefix = tomorrow && today.get(Calendar.HOUR_OF_DAY) >= 17 ? "Утре · " : "";
                 String fmt = c.getInt(2) == 1 ? "dd.MM" : "dd.MM · HH:mm";
-                return new SimpleDateFormat(fmt, Locale.getDefault()).format(begin) + " · " + c.getString(0);
+                return prefix + new SimpleDateFormat(fmt, Locale.getDefault()).format(begin) + " · " + c.getString(0);
             }
         } catch (Exception ignored) {}
         return null;
