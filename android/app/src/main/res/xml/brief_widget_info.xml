@@ -11,5 +11,6 @@
     android:initialLayout="@layout/brief_widget"
     android:previewLayout="@layout/brief_widget"
     android:previewImage="@mipmap/ic_launcher"
-    android:description="@string/app_name"
-    android:widgetCategory="home_screen" />
+    android:description="@string/widget_description"
+    android:widgetCategory="home_screen"
+    android:configure="@null" />

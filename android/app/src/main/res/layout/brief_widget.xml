@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/brief_widget_bg">
+    android:background="@drawable/brief_widget_bg"
+    android:contentDescription="@string/widget_description">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
         <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_brief_logo" android:contentDescription="Brief" />
         <TextView android:id="@+id/widget_greeting" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Brief" android:textColor="#22302C" android:textSize="18sp" android:textStyle="bold" />

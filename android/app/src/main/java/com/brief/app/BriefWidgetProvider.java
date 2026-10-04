@@ -18,6 +18,40 @@ public class BriefWidgetProvider extends AppWidgetProvider {
         BriefSchedule.schedule(ctx);
     }
 
+    @Override
+    public void onEnabled(Context ctx) {
+        BriefSchedule.schedule(ctx);
+        refreshAll(ctx);
+    }
+
+    @Override
+    public void onReceive(Context ctx, Intent intent) {
+        super.onReceive(ctx, intent);
+        if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(intent.getAction())) {
+            refreshAll(ctx);
+        }
+    }
+
+    @Override
+    public void onDeleted(Context ctx, int[] ids) {
+        super.onDeleted(ctx, ids);
+        if (AppWidgetManager.getInstance(ctx)
+                .getAppWidgetIds(new ComponentName(ctx, BriefWidgetProvider.class)).length == 0) {
+            BriefSchedule.schedule(ctx);
+        }
+    }
+
+    @Override
+    public void onDisabled(Context ctx) {
+        super.onDisabled(ctx);
+        BriefSchedule.schedule(ctx);
+    }
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context ctx, AppWidgetManager mgr, int id, android.os.Bundle options) {
+        mgr.updateAppWidget(id, views(ctx));
+    }
+
     static void refreshAll(Context ctx) {
         try {
             AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
